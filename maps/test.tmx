@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="2017.08.29" orientation="orthogonal" renderorder="right-down" width="30" height="8" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#000000" nextobjectid="20">
+ <tileset firstgid="1" source="../imgs/sheet.tsx"/>
+ <tileset firstgid="257" source="../imgs/door.tsx"/>
+ <tileset firstgid="259" source="../imgs/lamp.tsx"/>
+ <templategroup firsttid="1" source="templates/lamp.tgx"/>
+ <layer name="bg" width="30" height="8">
+  <data encoding="csv">
+0,0,0,0,13,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,13,0,0,0,0,
+0,0,0,0,13,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,13,0,0,0,0,
+0,0,0,0,13,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,13,0,0,0,0,
+0,0,0,0,13,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,13,0,0,0,0,
+0,0,0,0,13,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,13,0,0,0,0,
+0,0,0,0,13,11,11,12,13,0,0,0,0,0,0,0,0,0,0,0,0,13,11,11,12,13,0,0,0,0,
+0,0,0,0,13,12,11,12,13,0,0,0,0,0,0,0,0,0,0,0,0,13,12,11,12,13,0,0,0,0,
+0,0,0,0,13,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,13,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="objects">
+  <object id="8" name="door" gid="257" x="112" y="64" width="17" height="24">
+   <properties>
+    <property name="opened" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="12" tid="1" x="32" y="40">
+   <properties>
+    <property name="decorative" type="bool" value="false"/>
+    <property name="lit" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="16" tid="1" x="64" y="40"/>
+  <object id="17" tid="1" x="168" y="40"/>
+  <object id="18" tid="1" x="200" y="40"/>
+ </objectgroup>
+ <layer name="fg" width="30" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,26,27,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,26,42,43,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,26,42,43,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,26,42,43,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,42,43,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
