@@ -3,6 +3,7 @@ local m = sti("maps/test.lua")
 local palette = require("palette")
 local Player = require("player")
 local Torch = require("torch")
+local ParticleManager = require("particle.manager")
 
 local screen_canvas = nil
 local world_canvas = nil
@@ -45,7 +46,6 @@ function love.load()
         for key,value in pairs(object.properties) do
             local t = value
             if t == true or t == false then t = t and "true" or "false" end
-            print(key.."=>"..t)
         end
         if object.type == "torch" then
             torchs[#torchs+1] = Torch(math.floor(object.x+object.width/2), object.y-object.height, object.properties.lit, not object.properties.decorative)
@@ -55,9 +55,9 @@ end
 
 function draw_world()
     love.graphics.setCanvas(world_canvas)
+    -- Unable to use map draw because placing objects between layers.
     love.graphics.clear(palette[1])
     love.graphics.setColor(palette[4])
-    -- m:draw()
     for i,torch in pairs(torchs) do
         torch:draw_backlight()
     end
@@ -70,6 +70,9 @@ function draw_world()
     -- draw player
     love.graphics.setColor(palette[4])
     player:draw()
+    -- particles
+    ParticleManager:draw()
+
     -- draw fg
     love.graphics.setColor(palette[4])
     m:drawLayer(m.layers.fg)
@@ -96,6 +99,8 @@ function love.draw()
 
     love.graphics.setCanvas()
     love.graphics.draw(screen_canvas, 0,0, 0, 4,4)
+
+    love.graphics.print(love.timer.getFPS(),0,1)
 end
 
 function love.update(dt)
@@ -120,5 +125,9 @@ function love.update(dt)
     else
         player.looking ="normal"
     end
-    
+
+    for i,torch in pairs(torchs) do
+        torch:update(dt)
+    end   
+   ParticleManager:update(dt) 
 end

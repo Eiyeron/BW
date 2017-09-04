@@ -1,6 +1,6 @@
 local class = require("30loc")
 
-local Player = class()
+local Player = class "Player"
 local head_y_frames = {0,8,16,8}
 
 
@@ -8,6 +8,7 @@ function Player:init(x, y)
     self.x, self.y = x, y
     self.dx, self.dy = 0,0
     self.tex = love.graphics.newImage("imgs/sheet.png")
+    self.tex:setFilter("nearest")
     self.head_quad = love.graphics.newQuad(0,0,8,8,self.tex:getWidth(),self.tex:getHeight())
     self.body_quad = love.graphics.newQuad(4*8,0,8,8,self.tex:getWidth(),self.tex:getHeight())
 
@@ -105,7 +106,7 @@ end
 function Player:draw()
     local middle_x = self.x+4
     local body_quad = love.graphics.newQuad(4*8,0,8,8,self.tex:getWidth(),self.tex:getHeight())
-    local fx,fy = math.floor(self.x), math.floor(self.y)
+    local fx,fy = self.x,self.y
     local face_scale = self.facing == "left" and -1 or 1
     local face_offset = self.facing == "left" and 8 or 0
 
