@@ -1,9 +1,10 @@
-local class = require("30loc")
+local class = require("30log")
 
 local Particle = class "Particle"
 function Particle:init(x,y, life, dx, dy)
     self.alive = true
-    self.x, self.y = x,y
+    self.x = x
+    self.y = y
     self.life = life
     self.life_origin = life
     self.dx, self.dy = dx,dy

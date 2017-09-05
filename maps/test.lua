@@ -8,7 +8,7 @@ return {
   height = 8,
   tilewidth = 8,
   tileheight = 8,
-  nextobjectid = 20,
+  nextobjectid = 21,
   backgroundcolor = { 0, 0, 0 },
   properties = {},
   tilesets = {
@@ -118,7 +118,7 @@ return {
       width = 30,
       height = 8,
       visible = true,
-      opacity = 1,
+      opacity = 0.48,
       offsetx = 0,
       offsety = 0,
       properties = {},
@@ -138,7 +138,7 @@ return {
       type = "objectgroup",
       name = "objects",
       visible = true,
-      opacity = 1,
+      opacity = 0.74,
       offsetx = 0,
       offsety = 0,
       draworder = "topdown",
@@ -173,7 +173,7 @@ return {
           gid = 259,
           visible = true,
           properties = {
-            ["decorative"] = false,
+            ["backlight"] = true,
             ["lit"] = true
           }
         },
@@ -189,7 +189,10 @@ return {
           rotation = 0,
           gid = 259,
           visible = true,
-          properties = {}
+          properties = {
+            ["backlight"] = true,
+            ["lit"] = true
+          }
         },
         {
           id = 17,
@@ -203,7 +206,9 @@ return {
           rotation = 0,
           gid = 259,
           visible = true,
-          properties = {}
+          properties = {
+            ["lit"] = true
+          }
         },
         {
           id = 18,
@@ -217,7 +222,9 @@ return {
           rotation = 0,
           gid = 259,
           visible = true,
-          properties = {}
+          properties = {
+            ["lit"] = true
+          }
         }
       }
     },
@@ -242,7 +249,7 @@ return {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       }
     }
   }

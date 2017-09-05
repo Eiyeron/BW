@@ -1,4 +1,4 @@
-local class = require("30loc")
+local class = require("30log")
 
 local Player = class "Player"
 local head_y_frames = {0,8,16,8}

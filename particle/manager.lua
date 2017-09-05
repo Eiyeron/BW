@@ -1,4 +1,4 @@
-local class = require("30loc")
+local class = require("30log")
 local Particle = require("particle")
 
 ParticleManager = class "ParticleManager"
@@ -16,21 +16,17 @@ function ParticleManager:update(dt)
         if not self.parts[i].alive then
             table.remove(self.parts, i)
         end
-    end    
+    end
 end
 
 function ParticleManager:draw()
-    for _,part in ipairs(self.parts) do
+    for _,part in pairs(self.parts) do
         part:draw(dt)
     end
 end
 
 function ParticleManager:add(part)
     self.parts[#self.parts+1] = part
-end
-
-function ParticleManager:__call(part)
-    self:add(part)
 end
 
 local pm = ParticleManager()

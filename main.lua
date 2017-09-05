@@ -48,7 +48,7 @@ function love.load()
             if t == true or t == false then t = t and "true" or "false" end
         end
         if object.type == "torch" then
-            torchs[#torchs+1] = Torch(math.floor(object.x+object.width/2), object.y-object.height, object.properties.lit, not object.properties.decorative)
+            torchs[#torchs+1] = Torch(math.floor(object.x+object.width/2), object.y-object.height, object.properties.lit, object.properties.backlight)
         end
     end
 end
@@ -126,7 +126,7 @@ function love.update(dt)
         player.looking ="normal"
     end
 
-    for i,torch in pairs(torchs) do
+    for i,torch in ipairs(torchs) do
         torch:update(dt)
     end   
    ParticleManager:update(dt) 

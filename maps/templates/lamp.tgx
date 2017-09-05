@@ -4,7 +4,7 @@
  <template name="lamp" id="0">
   <object name="lamp" type="torch" gid="1" width="8" height="16">
    <properties>
-    <property name="decorative" type="bool" value="true"/>
+    <property name="backlight" type="bool" value="false"/>
     <property name="lit" type="bool" value="false"/>
    </properties>
   </object>
