@@ -105,6 +105,7 @@ function Player:update(dt, room)
 end
 
 function Player:draw()
+    love.graphics.setColor(255,255,255)
     local middle_x = self.x + 4
     local body_quad = love.graphics.newQuad(4 * 8, 0, 8, 8, self.tex:getWidth(), self.tex:getHeight())
     local fx, fy = self.x, self.y

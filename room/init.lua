@@ -68,12 +68,13 @@ function Room:update(dt)
 end
 
 function Room:draw_bg()
-    love.graphics.setColor(palette[4])
+    love.graphics.setColor(255,255,255)
     for i, torch in pairs(self.torchs) do
         torch:draw_backlight()
     end
-    love.graphics.setColor(palette[4])
+    love.graphics.setColor(255,255,255)
     self.map:drawLayer(self.map.layers.bg)
+    love.graphics.setColor(255,255,255)
     self.map:drawLayer(self.map.layers.objects)
     for i, torch in pairs(self.torchs) do
         torch:draw()
@@ -85,6 +86,7 @@ function Room:draw_bg()
 end
 
 function Room:draw_fg()
+    love.graphics.setColor(255,255,255)
     self.map:drawLayer(self.map.layers.fg)
 end
 

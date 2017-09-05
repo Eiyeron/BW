@@ -1,4 +1,3 @@
-
 local palette = require("palette")
 local Player = require("player")
 local Torch = require("torch")
@@ -21,7 +20,7 @@ local shader =
     {
         vec3 color = Texel(texture, texture_coords).rgb;
         if (color.r <= 0/255.)
-            return vec4(255/255.,255/255.,255/255.,1);
+            return vec4(255/255.,241/255.,232/255.,1);
         else if (color.r <= 95/255.)
             return vec4(194/255.,195/255.,199/255.,1);
         else if (color.r <= 194/255.)
@@ -59,11 +58,9 @@ function draw_world()
     -- particles
     ParticleManager:draw()
     -- draw player
-    love.graphics.setColor(palette[4])
     player:draw()
 
     -- draw fg
-    love.graphics.setColor(palette[4])
     room:draw_fg()
     -- ground
     love.graphics.setLineWidth(1)
@@ -133,5 +130,9 @@ function love.update(dt)
         end
     end
 
+    if love.keyboard.isDown("f1") then
+        local screenshot = love.graphics.newScreenshot();
+        screenshot:encode('png', os.time() .. '.png');
+    end
     ParticleManager:update(dt)
 end
