@@ -15,8 +15,8 @@ function Player:init(x, y)
     self.looking = "normal"
     self.state = "stair"
     self.stair = {
-        start = 130,
-        send = 130 + 32,
+        start = 169,
+        send = 169 + 64,
         bottom_y = 63,
         -- going downwards in which direction
         orientation = "left"

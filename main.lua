@@ -76,11 +76,13 @@ function draw_world()
     for i, torch in pairs(torchs) do
         torch:draw()
     end
+
+    love.graphics.setColor(palette[4])
+    -- particles
+    ParticleManager:draw()
     -- draw player
     love.graphics.setColor(palette[4])
     player:draw()
-    -- particles
-    ParticleManager:draw()
 
     -- draw fg
     love.graphics.setColor(palette[4])
