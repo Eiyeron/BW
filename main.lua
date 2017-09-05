@@ -12,7 +12,8 @@ local player = nil
 local pico8 = nil
 local torchs = {}
 
-local shader = [[
+local shader =
+    [[
     // Why the heck do I have to invert the colors manually like this?...
     vec4 effect(vec4 loveColor, Image texture, vec2 texture_coords, vec2 screen_coords)
     {
@@ -32,23 +33,31 @@ local shader = [[
 ]]
 
 function love.load()
-    screen_canvas = love.graphics.newCanvas(240,128)
+    screen_canvas = love.graphics.newCanvas(240, 128)
     screen_canvas:setFilter("nearest")
-    world_canvas = love.graphics.newCanvas(240,64)
+    world_canvas = love.graphics.newCanvas(240, 64)
     world_canvas:setFilter("nearest")
     love.graphics.setLineStyle("rough")
     reflect_shader = love.graphics.newShader(shader)
-    player = Player(64,25)
-    pico8 = love.graphics.newFont("fnts/pico8.ttf",4)
+    player = Player(64, 25)
+    pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(pico8)
 
-    for _,object in pairs(m.layers.objects.objects) do
-        for key,value in pairs(object.properties) do
+    for _, object in pairs(m.layers.objects.objects) do
+        for key, value in pairs(object.properties) do
             local t = value
-            if t == true or t == false then t = t and "true" or "false" end
+            if t == true or t == false then
+                t = t and "true" or "false"
+            end
         end
         if object.type == "torch" then
-            torchs[#torchs+1] = Torch(math.floor(object.x+object.width/2), object.y-object.height, object.properties.lit, object.properties.backlight)
+            torchs[#torchs + 1] =
+                Torch(
+                math.floor(object.x + object.width / 2),
+                object.y - object.height,
+                object.properties.lit,
+                object.properties.backlight
+            )
         end
     end
 end
@@ -58,13 +67,13 @@ function draw_world()
     -- Unable to use map draw because placing objects between layers.
     love.graphics.clear(palette[1])
     love.graphics.setColor(palette[4])
-    for i,torch in pairs(torchs) do
+    for i, torch in pairs(torchs) do
         torch:draw_backlight()
     end
     love.graphics.setColor(palette[4])
     m:drawLayer(m.layers.bg)
     m:drawLayer(m.layers.objects)
-    for i,torch in pairs(torchs) do
+    for i, torch in pairs(torchs) do
         torch:draw()
     end
     -- draw player
@@ -79,16 +88,16 @@ function draw_world()
     -- ground
     love.graphics.setLineWidth(1)
     love.graphics.setColor(palette[4])
-    love.graphics.line(0,64,240,64)
+    love.graphics.line(0, 64, 240, 64)
 end
 
 function draw_reflect()
     love.graphics.setCanvas(screen_canvas)
     love.graphics.clear(palette[1])
-    love.graphics.setColor(255,255,255,255)
-    love.graphics.draw(world_canvas, 0,0)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(world_canvas, 0, 0)
     love.graphics.setShader(reflect_shader)
-    love.graphics.draw(world_canvas, 0,128, 0, 1,-1)
+    love.graphics.draw(world_canvas, 0, 128, 0, 1, -1)
     love.graphics.setShader()
 end
 
@@ -98,9 +107,9 @@ function love.draw()
     draw_reflect()
 
     love.graphics.setCanvas()
-    love.graphics.draw(screen_canvas, 0,0, 0, 4,4)
+    love.graphics.draw(screen_canvas, 0, 0, 0, 4, 4)
 
-    love.graphics.print(love.timer.getFPS(),0,1)
+    love.graphics.print(love.timer.getFPS(), 0, 1)
 end
 
 function love.update(dt)
@@ -119,15 +128,15 @@ function love.update(dt)
         player.walking = false
     end
     if love.keyboard.isDown("up") then
-        player.looking ="up"
+        player.looking = "up"
     elseif love.keyboard.isDown("down") then
-        player.looking ="down"
+        player.looking = "down"
     else
-        player.looking ="normal"
+        player.looking = "normal"
     end
 
-    for i,torch in ipairs(torchs) do
+    for i, torch in ipairs(torchs) do
         torch:update(dt)
-    end   
-   ParticleManager:update(dt) 
+    end
+    ParticleManager:update(dt)
 end
