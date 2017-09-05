@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2017.08.29" orientation="orthogonal" renderorder="right-down" width="30" height="8" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#000000" nextobjectid="21">
+<map version="1.0" tiledversion="2017.08.29" orientation="orthogonal" renderorder="right-down" width="30" height="8" tilewidth="8" tileheight="8" infinite="0" nextobjectid="22">
+ <properties>
+  <property name="left" value="test"/>
+  <property name="right" value="test"/>
+ </properties>
  <tileset firstgid="1" source="../imgs/sheet.tsx"/>
  <tileset firstgid="257" source="../imgs/door.tsx"/>
  <tileset firstgid="259" source="../imgs/lamp.tsx"/>
@@ -17,7 +21,7 @@
 </data>
  </layer>
  <objectgroup name="objects">
-  <object id="8" name="door" gid="257" x="112" y="64" width="17" height="24">
+  <object id="8" name="door" type="door" gid="257" x="112" y="64" width="17" height="24">
    <properties>
     <property name="opened" type="bool" value="false"/>
    </properties>
@@ -40,11 +44,14 @@
     <property name="lit" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="18" tid="1" x="200" y="40">
+  <object id="18" tid="1" x="200" y="40" visible="1">
    <properties>
     <property name="backlight" type="bool" value="true"/>
     <property name="lit" type="bool" value="true"/>
    </properties>
+  </object>
+  <object id="21" name="stair" type="stair" x="168" y="63">
+   <polyline points="1,0 88,-87"/>
   </object>
  </objectgroup>
  <layer name="fg" width="30" height="8">

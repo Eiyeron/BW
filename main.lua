@@ -1,16 +1,18 @@
-local sti = require("sti")
-local m = sti("maps/test.lua")
+
 local palette = require("palette")
 local Player = require("player")
 local Torch = require("torch")
 local ParticleManager = require("particle.manager")
+local RoomStorage = require("room.storage")
 
 local screen_canvas = nil
 local world_canvas = nil
 local reflect_shader = nil
 local player = nil
 local pico8 = nil
-local torchs = {}
+
+local room = nil
+local roomStorage = RoomStorage()
 
 local shader =
     [[
@@ -42,40 +44,16 @@ function love.load()
     player = Player(64, 25)
     pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(pico8)
-
-    for _, object in pairs(m.layers.objects.objects) do
-        for key, value in pairs(object.properties) do
-            local t = value
-            if t == true or t == false then
-                t = t and "true" or "false"
-            end
-        end
-        if object.type == "torch" then
-            torchs[#torchs + 1] =
-                Torch(
-                math.floor(object.x + object.width / 2),
-                object.y - object.height,
-                object.properties.lit,
-                object.properties.backlight
-            )
-        end
-    end
+    room = roomStorage:get("test")
 end
 
 function draw_world()
     love.graphics.setCanvas(world_canvas)
     -- Unable to use map draw because placing objects between layers.
     love.graphics.clear(palette[1])
-    love.graphics.setColor(palette[4])
-    for i, torch in pairs(torchs) do
-        torch:draw_backlight()
-    end
-    love.graphics.setColor(palette[4])
-    m:drawLayer(m.layers.bg)
-    m:drawLayer(m.layers.objects)
-    for i, torch in pairs(torchs) do
-        torch:draw()
-    end
+
+    -- room draw bg
+    room:draw_bg()
 
     love.graphics.setColor(palette[4])
     -- particles
@@ -86,7 +64,7 @@ function draw_world()
 
     -- draw fg
     love.graphics.setColor(palette[4])
-    m:drawLayer(m.layers.fg)
+    room:draw_fg()
     -- ground
     love.graphics.setLineWidth(1)
     love.graphics.setColor(palette[4])
@@ -112,11 +90,13 @@ function love.draw()
     love.graphics.draw(screen_canvas, 0, 0, 0, 4, 4)
 
     love.graphics.print(love.timer.getFPS(), 0, 1)
+    love.graphics.print(player.state, 0, 7)
+    love.graphics.print(player.x.." "..player.y.."("..(player.y+16)..")", 0, 13)
 end
 
 function love.update(dt)
-    m:update()
-    player:update(dt)
+    room:update(dt)
+    player:update(dt, room)
     if love.keyboard.isDown("left") then
         player.dx = -30
         player.facing = "left"
@@ -137,8 +117,21 @@ function love.update(dt)
         player.looking = "normal"
     end
 
-    for i, torch in ipairs(torchs) do
-        torch:update(dt)
+    if player.x < -8 then
+        if room.transitions.left then
+            room = roomStorage:get(room.transitions.left)
+            player.x = 247
+        else
+            player.x = -8
+        end
+    elseif player.x > 248 then
+        if room.transitions.right then
+            room = roomStorage:get(room.transitions.right)
+            player.x = -7
+        else
+            player.x = 248
+        end
     end
+
     ParticleManager:update(dt)
 end

@@ -8,9 +8,11 @@ return {
   height = 8,
   tilewidth = 8,
   tileheight = 8,
-  nextobjectid = 21,
-  backgroundcolor = { 0, 0, 0 },
-  properties = {},
+  nextobjectid = 22,
+  properties = {
+    ["left"] = "test",
+    ["right"] = "test"
+  },
   tilesets = {
     {
       name = "sheet",
@@ -147,7 +149,7 @@ return {
         {
           id = 8,
           name = "door",
-          type = "",
+          type = "door",
           shape = "rectangle",
           x = 112,
           y = 64,
@@ -227,6 +229,23 @@ return {
             ["backlight"] = true,
             ["lit"] = true
           }
+        },
+        {
+          id = 21,
+          name = "stair",
+          type = "stair",
+          shape = "polyline",
+          x = 168,
+          y = 63,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          polyline = {
+            { x = 1, y = 0 },
+            { x = 88, y = -87 }
+          },
+          properties = {}
         }
       }
     },

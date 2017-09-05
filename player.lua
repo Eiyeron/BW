@@ -13,14 +13,8 @@ function Player:init(x, y)
 
     self.facing = "right"
     self.looking = "normal"
-    self.state = "stair"
-    self.stair = {
-        start = 169,
-        send = 169 + 64,
-        bottom_y = 63,
-        -- going downwards in which direction
-        orientation = "left"
-    }
+    self.state = "ground"
+    self.stair = nil
 
     self.blinking_timer = 3
     self.blinking_progress = 0
@@ -30,7 +24,7 @@ function Player:init(x, y)
     self.walk_cycle_progress = 0
 end
 
-function Player:update(dt)
+function Player:update(dt, room)
     if self.state == "ground" then
         self.dy = self.dy + 1
         if self.y >= 63 - 16 then
@@ -46,31 +40,33 @@ function Player:update(dt)
 
     local middle_x = self.x + 4
     if self.state == "ground" then
-        -- if middle_x >= self.stair.start and middle_x <= self.stair.send then
-        --     self.state = "stair"
-        -- end
-        if math.floor(self.y + 16) == self.stair.bottom_y and self.looking == "up" then
-            if
-                middle_x >= self.stair.start and middle_x <= self.stair.start + 1 and self.facing == "right" and
-                    self.stair.orientation == "left"
-             then
-                self.state = "stair"
-            end
+        for _,stair in ipairs(room.stairs) do
+            if math.floor(self.y + 16) == stair.bottom_y and self.looking == "up" then
+                if
+                    middle_x >= stair.start_x and middle_x <= stair.start_x + 1 and self.facing == "right" and
+                        stair.orientation == "left"
+                then
+                    self.state = "stair"
+                    self.stair = stair
+                end
 
-            if
-                middle_x >= self.stair.send - 1 and middle_x <= self.stair.send and self.facing == "left" and
-                    self.stair.orientation == "right"
-             then
-                self.state = "stair"
+                if
+                    middle_x >= stair.end_x - 1 and middle_x <= stair.end_x and self.facing == "left" and
+                        self.stair.orientation == "right"
+                then
+                    self.state = "stair"
+                    self.stair = stair
+                end
             end
         end
     elseif self.state == "stair" then
-        if middle_x < self.stair.start or middle_x > self.stair.send then
+        if middle_x < self.stair.start_x or middle_x > self.stair.end_x then
             self.state = "ground"
+            self.stair = nil
         elseif self.stair.orientation == "left" then
-            self.y = self.stair.bottom_y - 16 - (middle_x - self.stair.start)
+            self.y = self.stair.bottom_y - 16 - (middle_x - self.stair.start_x)
         elseif self.stair.orientation == "right" then
-            self.y = self.stair.bottom_y - 16 - (self.stair.send - middle_x)
+            self.y = self.stair.bottom_y - 16 - (self.stair.end_x - middle_x)
         end
     end
 
@@ -118,24 +114,6 @@ function Player:draw()
     love.graphics.draw(self.tex, self.head_quad, fx + face_offset, fy, 0, face_scale, 1)
 
     love.graphics.draw(self.tex, self.body_quad, fx + face_offset, fy + 8, 0, face_scale, 1)
-
-    love.graphics.setColor(255, 0, 0, 255)
-
-    if self.stair.orientation == "left" then
-        love.graphics.line(
-            self.stair.start,
-            self.stair.bottom_y,
-            self.stair.send,
-            self.stair.bottom_y - (self.stair.send - self.stair.start)
-        )
-    elseif self.stair.orientation == "right" then
-        love.graphics.line(
-            self.stair.start,
-            self.stair.bottom_y - (self.stair.send - self.stair.start),
-            self.stair.send,
-            self.stair.bottom_y
-        )
-    end
 end
 
 return Player
