@@ -13,12 +13,30 @@ local pico8 = nil
 local room = nil
 local roomStorage = RoomStorage()
 
+local sampling_factor = 0
+
 local shader =
     [[
+    extern number time = 0;
+    extern vec2 amplitude = vec2(16. / 128., 8/128.);
+    extern vec2 speed = vec2(1., 8.);
+    extern vec2 frequency = vec2(1, 3);
+    extern number sampling_factor = 0.025;
+
+    vec2 distort(vec2 texture_coords)
+    {
+        vec2 offset = amplitude * sin(texture_coords.y * frequency + time * speed);
+        return texture_coords + offset;
+
+    }
     // Why the heck do I have to invert the colors manually like this?...
     vec4 effect(vec4 loveColor, Image texture, vec2 texture_coords, vec2 screen_coords)
     {
-        vec3 color = Texel(texture, texture_coords).rgb;
+        vec2 uv = distort(texture_coords);
+        vec3 color = Texel(texture, uv).rgb;
+        vec3 colorDown = Texel(texture, uv + vec2(0,1/240.)).rgb;
+        vec3 colorUp = Texel(texture, uv + vec2(0,-1/240.)).rgb;
+        color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
         if (color.r <= 0/255.)
             return vec4(255/255.,241/255.,232/255.,1);
         else if (color.r <= 95/255.)
@@ -39,6 +57,8 @@ function love.load()
     world_canvas = love.graphics.newCanvas(240, 64)
     world_canvas:setFilter("nearest")
     love.graphics.setLineStyle("rough")
+    -- Putting colored limits to the reflection to avoid strange result
+    world_canvas:setWrap( "clamp", "clamp" )
     reflect_shader = love.graphics.newShader(shader)
     player = Player(64, 25)
     pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
@@ -74,6 +94,8 @@ function draw_reflect()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(world_canvas, 0, 0)
     love.graphics.setShader(reflect_shader)
+    reflect_shader:send("time", love.timer.getTime())
+    reflect_shader:send("sampling_factor", sampling_factor)
     love.graphics.draw(world_canvas, 0, 128, 0, 1, -1)
     love.graphics.setShader()
 end
@@ -89,6 +111,13 @@ function love.draw()
     love.graphics.print(love.timer.getFPS(), 0, 1)
     love.graphics.print(player.state, 0, 7)
     love.graphics.print(player.x.." "..player.y.."("..(player.y+16)..")", 0, 13)
+    love.graphics.print("Sampling factor : "..sampling_factor, 0, 19)
+end
+
+function love.keypressed(key)
+    if key == "space" then
+        sampling_factor = 0.33 - sampling_factor
+    end
 end
 
 function love.update(dt)
@@ -115,15 +144,27 @@ function love.update(dt)
     end
 
     if player.x < -8 then
-        if room.transitions.left then
+        if room.transitions.down_left and player.y<=128 then
+            room = roomStorage:get(room.transitions.down_left)
+            player.x = 247
+        elseif room.transitions.left and player.y<=63 then
             room = roomStorage:get(room.transitions.left)
+            player.x = 247
+        elseif room.transitions.up_left and player.y<=0 then
+            room = roomStorage:get(room.transitions.up_left)
             player.x = 247
         else
             player.x = -8
         end
     elseif player.x > 248 then
-        if room.transitions.right then
+        if room.transitions.down_right and player.y<=128 then
+            room = roomStorage:get(room.transitions.down_right)
+            player.x = 247
+        elseif room.transitions.right and player.y<=63 then
             room = roomStorage:get(room.transitions.right)
+            player.x = -7
+        elseif room.transitions.up_right and player.y<=0 then
+            room = roomStorage:get(room.transitions.up_right)
             player.x = -7
         else
             player.x = 248

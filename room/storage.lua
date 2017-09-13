@@ -1,5 +1,5 @@
 local class = require("30log")
-local Room = require("Room")
+local Room = require("room")
 
 local RoomStorage = class "RoomStorage"
 RoomStorage.init = {rooms={},prefix="maps/"}
