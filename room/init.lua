@@ -2,8 +2,9 @@ local class = require("30log")
 local sti = require("sti")
 local palette = require("palette")
 
-local Torch = require("torch")
-local Stair = require("stair")
+-- Find a way to automatically register objects?
+local Torch = require("objs.torch")
+local Stair = require("objs.stair")
 
 local object_assert_message_format = "%s : Object #%d (%s) %s"
 
@@ -28,8 +29,7 @@ function Room:init(tileset_path)
         local otype = string.lower(object.type)
         -- Torch
         if otype == "torch" then
-            self.torchs[#self.torchs + 1] =
-                Torch(
+            self.torchs[#self.torchs + 1] = Torch(
                 math.floor(object.x + object.width / 2),
                 object.y - object.height,
                 object.properties.lit,

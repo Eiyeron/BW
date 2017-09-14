@@ -1,6 +1,6 @@
 local palette = require("palette")
 local Player = require("player")
-local Torch = require("torch")
+local Torch = require("objs.torch")
 local ParticleManager = require("particle.manager")
 local RoomStorage = require("room.storage")
 
@@ -13,43 +13,9 @@ local pico8 = nil
 local room = nil
 local roomStorage = RoomStorage()
 
+local Shader = require("shdrs")
+
 local sampling_factor = 0
-
-local shader =
-    [[
-    extern number time = 0;
-    extern vec2 amplitude = vec2(16. / 128., 8/128.);
-    extern vec2 speed = vec2(1., 8.);
-    extern vec2 frequency = vec2(1, 3);
-    extern number sampling_factor = 0.025;
-
-    vec2 distort(vec2 texture_coords)
-    {
-        vec2 offset = amplitude * sin(texture_coords.y * frequency + time * speed);
-        return texture_coords + offset;
-
-    }
-    // Why the heck do I have to invert the colors manually like this?...
-    vec4 effect(vec4 loveColor, Image texture, vec2 texture_coords, vec2 screen_coords)
-    {
-        vec2 uv = distort(texture_coords);
-        vec3 color = Texel(texture, uv).rgb;
-        vec3 colorDown = Texel(texture, uv + vec2(0,1/240.)).rgb;
-        vec3 colorUp = Texel(texture, uv + vec2(0,-1/240.)).rgb;
-        color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
-        if (color.r <= 0/255.)
-            return vec4(255/255.,241/255.,232/255.,1);
-        else if (color.r <= 95/255.)
-            return vec4(194/255.,195/255.,199/255.,1);
-        else if (color.r <= 194/255.)
-            return vec4(95/255.,87/255.,79/255.,1);
-        else if (color.r <= 255/255.)
-            return vec4(0,0,0,1);
-            
-        return vec4(color,1);
-    }
-
-]]
 
 function love.load()
     screen_canvas = love.graphics.newCanvas(240, 128)
@@ -58,8 +24,8 @@ function love.load()
     world_canvas:setFilter("nearest")
     love.graphics.setLineStyle("rough")
     -- Putting colored limits to the reflection to avoid strange result
+    reflect_shader = Shader("shdrs/reflect.glsl")
     world_canvas:setWrap( "clamp", "clamp" )
-    reflect_shader = love.graphics.newShader(shader)
     player = Player(64, 25)
     pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(pico8)
@@ -93,9 +59,10 @@ function draw_reflect()
     love.graphics.clear(palette[1])
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(world_canvas, 0, 0)
-    love.graphics.setShader(reflect_shader)
-    reflect_shader:send("time", love.timer.getTime())
-    reflect_shader:send("sampling_factor", sampling_factor)
+    reflect_shader:use({
+        {"time", love.timer.getTime()},
+        {"sampling_factor", sampling_factor}
+    })
     love.graphics.draw(world_canvas, 0, 128, 0, 1, -1)
     love.graphics.setShader()
 end
@@ -117,6 +84,11 @@ end
 function love.keypressed(key)
     if key == "space" then
         sampling_factor = 0.33 - sampling_factor
+    elseif key == "f1" then
+        local screenshot = love.graphics.newScreenshot();
+        screenshot:encode('png', os.time() .. '.png');
+    elseif key == "f2" then
+        reflect_shader:reload()
     end
 end
 
@@ -171,9 +143,5 @@ function love.update(dt)
         end
     end
 
-    if love.keyboard.isDown("f1") then
-        local screenshot = love.graphics.newScreenshot();
-        screenshot:encode('png', os.time() .. '.png');
-    end
     ParticleManager:update(dt)
 end
