@@ -17,6 +17,8 @@ local Shader = require("shdrs")
 
 local sampling_factor = 0
 
+require( "errhandler" )
+
 function love.load()
     screen_canvas = love.graphics.newCanvas(240, 128)
     screen_canvas:setFilter("nearest")
@@ -30,6 +32,10 @@ function love.load()
     pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(pico8)
     room = roomStorage:get("test")
+
+    -- TODO : clean cap
+    min_dt = 1/30
+    next_time = love.timer.getTime()    
 end
 
 function draw_world()
@@ -77,22 +83,35 @@ function love.draw()
 
     love.graphics.print(love.timer.getFPS(), 0, 1)
     love.graphics.print(player.state, 0, 7)
-    love.graphics.print(player.x.." "..player.y.."("..(player.y+16)..")", 0, 13)
+    love.graphics.print(love.timer.getDelta(),0,13)
     love.graphics.print("Sampling factor : "..sampling_factor, 0, 19)
+
+    love.graphics.setColor(255,0,0)
+
+    -- TODO : clean cap
+    local cur_time = love.timer.getTime()
+    if next_time <= cur_time then
+        next_time = cur_time
+        return
+    end
+    love.timer.sleep(next_time - cur_time)    
 end
 
 function love.keypressed(key)
     if key == "space" then
-        sampling_factor = 0.33 - sampling_factor
+        sampling_factor = 0.25 - sampling_factor
     elseif key == "f1" then
         local screenshot = love.graphics.newScreenshot();
         screenshot:encode('png', os.time() .. '.png');
     elseif key == "f2" then
         reflect_shader:reload()
+    elseif key == "f3" then
+        assert(false, "Test")
     end
 end
 
 function love.update(dt)
+
     room:update(dt)
     player:update(dt, room)
     if love.keyboard.isDown("left") then
@@ -144,4 +163,8 @@ function love.update(dt)
     end
 
     ParticleManager:update(dt)
+
+    -- TODO : cleap cap
+   next_time = next_time + min_dt
+
 end
