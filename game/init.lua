@@ -10,11 +10,14 @@ local _LoveCallbacks = require("utils.love_callbacks")
 local Game = class "Game"
 function Game:init(state)
 	self.state = state
+    self:register_callbacks()
 	self.next_state = nil
+    love.update = function(dt) self:update(dt) end
+    love.draw = function() self:draw() end
 
 	-- Framerate limiter
     self.min_dt = 1/30
-    self.next_time = love.timer.getTime()    
+    self.next_time = love.timer.getTime()
 
 end
 
@@ -50,7 +53,7 @@ function Game:draw()
         self.next_time = cur_time
         return
     end
-    love.timer.sleep(self.next_time - cur_time)    
+    love.timer.sleep(self.next_time - cur_time)
 end
 
 -- To be called by GameState
