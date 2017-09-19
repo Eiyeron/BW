@@ -41,7 +41,6 @@ function Game:update(dt)
 		self:register_callbacks()
 	end
 
-	-- TODO : avoid sleeping if dt exceeds min_dt
    	self.next_time = self.next_time + self.min_dt
 end
 
