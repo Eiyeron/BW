@@ -93,41 +93,6 @@ function GameState:keypressed(key)
     end
 end
 
-
-function GameState:draw_world()
-    love.graphics.setCanvas(self.world_canvas)
-    -- Unable to use map draw because placing objects between layers.
-    love.graphics.clear(palette[1])
-
-    -- room draw bg
-    self.room:draw_bg()
-
-    love.graphics.setColor(palette[4])
-    -- particles
-    ParticleManager:draw()
-    -- draw player
-    self.player:draw()
-
-    -- draw fg
-    self.room:draw_fg()
-    -- ground
-
-end
-
-
-function GameState:draw_reflect()
-    love.graphics.setCanvas(self.screen_canvas)
-    love.graphics.clear(palette[1])
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(self.world_canvas, 0, 0)
-    self.reflect_shader:use({
-        {"time", love.timer.getTime()},
-        {"sampling_factor", 0.5}
-    })
-    love.graphics.draw(self.world_canvas, 0, 128, 0, 1, -1)
-    love.graphics.setShader()
-end
-
 function GameState:draw()
     love.graphics.setCanvas(self.screen_canvas)
     love.graphics.push()
