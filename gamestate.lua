@@ -4,7 +4,7 @@ local Player = require("player")
 local Torch = require("objs.torch")
 local RoomStorage = require("room.storage")
 local Shader = require("shdrs")
-local ParticleManager = require("particle.manager")
+local Layer = require("game.layer")
 
 local GameState = State:extend("GameState")
 function GameState:init()
@@ -12,23 +12,26 @@ function GameState:init()
 
     self.screen_canvas = love.graphics.newCanvas(240, 128)
     self.screen_canvas:setFilter("nearest")
-    self.world_canvas = love.graphics.newCanvas(240, 64)
-    self.world_canvas:setFilter("nearest")
+
     love.graphics.setLineStyle("rough")
     -- Putting colored limits to the reflection to avoid strange result
     self.reflect_shader = Shader("shdrs/reflect.glsl")
-    self.world_canvas:setWrap( "clamp", "clamp" )
     self.player = Player(64, 25)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(self.pico8)
 
     self.room_storage = RoomStorage()
     self.room = self.room_storage:get("test")
+    self.room.player = self.player
+
+    self:add(self.room)
+
 end
 
 function GameState:update(dt)
-    self.room:update(dt)
-    self.player:update(dt, self.room)
+    self.super.update(self, dt)
+    -- self.room:update(dt)
+    -- self.player:update(dt, self.room)
     if love.keyboard.isDown("left") then
         self.player.dx = -30
         self.player.facing = "left"
@@ -77,7 +80,6 @@ function GameState:update(dt)
         end
     end
 
-    ParticleManager:update(dt)    
 end
 
 function GameState:keypressed(key)
@@ -109,9 +111,7 @@ function GameState:draw_world()
     -- draw fg
     self.room:draw_fg()
     -- ground
-    love.graphics.setLineWidth(1)
-    love.graphics.setColor(palette[4])
-    love.graphics.line(0, 64, 240, 64)
+
 end
 
 
@@ -129,15 +129,25 @@ function GameState:draw_reflect()
 end
 
 function GameState:draw()
-    self:draw_world()
+    love.graphics.setCanvas(self.screen_canvas)
+    love.graphics.push()
+        love.graphics.clear(palette[1])
 
-    self:draw_reflect()
+        self.room:draw()
+        -- Reflect
+        self.reflect_shader:use({
+            {"time", love.timer.getTime()},
+            {"sampling_factor", 0.5}
+        })
+        love.graphics.draw(self.room.canvas,0,128,0,1,-1)
+        love.graphics.setShader()
 
+    love.graphics.pop()
     love.graphics.setCanvas()
-    love.graphics.draw(self.screen_canvas, 0, 0, 0, 4, 4)
+    love.graphics.draw(self.screen_canvas,0,0, 0, 4,4)
 
     love.graphics.print(love.timer.getFPS(), 0, 1)
-    love.graphics.print(self.player.state, 0, 7)
+    love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
     love.graphics.print(love.timer.getDelta(),0,13)
 
 end
