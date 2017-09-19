@@ -1,5 +1,5 @@
-local Game = require("Game")
-local GameState = require("GameState")
+local Game = require("game")
+local GameState = require("gamestate")
 
 game = nil
 
