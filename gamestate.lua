@@ -15,7 +15,13 @@ function GameState:init()
 
     love.graphics.setLineStyle("rough")
     -- Putting colored limits to the reflection to avoid strange result
-    self.reflect_shader = Shader("shdrs/reflect.glsl")
+    self.effects_shader = Shader("shdrs/palette_reflect.glsl")
+    local test = {}
+    for i=1,4 do
+        test[i] = palette[i]
+    end
+    test[5] = {0,0,0}
+    self.effects_shader:send("palette", unpack(test))
     self.player = Player(64, 25)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(self.pico8)
@@ -87,7 +93,7 @@ function GameState:keypressed(key)
         local screenshot = love.graphics.newScreenshot();
         screenshot:encode('png', os.time() .. '.png');
     elseif key == "f2" then
-        self.reflect_shader:reload()
+        self.effects_shader:reload()
     elseif key == "f3" then
         assert(false, "Test")
     end
@@ -96,13 +102,21 @@ end
 function GameState:draw()
     love.graphics.setCanvas(self.screen_canvas)
     love.graphics.push()
-        love.graphics.clear(palette[1])
+        love.graphics.clear(0,0,0)
 
+        self.effects_shader:use({
+            {"time", love.timer.getTime()},
+            {"sampling_factor", 0.5},
+            {"amplitude", {0,0}},
+            {"inverse", false}
+        })
         self.room:draw()
         -- Reflect
-        self.reflect_shader:use({
+        self.effects_shader:use({
             {"time", love.timer.getTime()},
-            {"sampling_factor", 0.5}
+            {"sampling_factor", 0.5},
+            {"amplitude", {0,8/128}},
+            {"inverse", true}
         })
         love.graphics.draw(self.room.canvas,0,128,0,1,-1)
         love.graphics.setShader()

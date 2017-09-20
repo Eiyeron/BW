@@ -12,7 +12,8 @@ local TorchParticle = Particle:extend("TorchParticle")
 
 function TorchParticle:init(x, y)
     self.super.init(self, x, y, 1 / 3, 0, -24 - math.random(14))
-    self.color = palette[math.random(3, 4)]
+    local v = 255/3 * math.random(2, 3)
+    self.color = {v,v,v}
     self.radius = math.random(2, 3)
 end
 
@@ -40,7 +41,7 @@ function Torch:draw_backlight()
     if not self.lit or not self.backlight then
         return
     end
-    love.graphics.setColor(palette[2])
+    love.graphics.setColor(255/3,255/3,255/3)
     love.graphics.circle("fill", self.x, self.y, self.backlight_radius)
     love.graphics.setLineWidth(2)
     love.graphics.circle("line", self.x, self.y, self.backlight_radius + 3)

@@ -104,10 +104,12 @@ end
 
 function Room:draw()
     local previous_canvas = love.graphics.getCanvas()
+    local previous_shader = love.graphics.getShader()
     love.graphics.setCanvas(common_canvas)
+    love.graphics.setShader()
     love.graphics.push()
         love.graphics.origin()
-        love.graphics.clear(palette[1])
+        love.graphics.clear(0,0,0)
         self:draw_bg()
 
         love.graphics.setColor(255,255,255)
@@ -121,6 +123,7 @@ function Room:draw()
         love.graphics.setColor(unpack(palette[4]))
         love.graphics.line(0, 64, 240, 64)
     love.graphics.pop()
+    love.graphics.setShader(previous_shader)
     love.graphics.setCanvas(previous_canvas)
 
     love.graphics.setColor(255,255,255)
