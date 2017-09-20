@@ -109,6 +109,7 @@ function GameState:draw()
 
     love.graphics.pop()
     love.graphics.setCanvas()
+    love.graphics.setColor(255,255,255)
     love.graphics.draw(self.screen_canvas,0,0, 0, 4,4)
 
     love.graphics.print(love.timer.getFPS(), 0, 1)

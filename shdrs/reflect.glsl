@@ -19,7 +19,7 @@ vec4 effect(vec4 loveColor, Image texture, vec2 texture_coords, vec2 screen_coor
     vec3 colorDown = Texel(texture, uv + vec2(0,1/(128*2.))).rgb;
     vec3 colorUp = Texel(texture, uv + vec2(0,-1/(128*2.))).rgb;
     color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
-    if (color.r <= 0/255.)
+    if (color.r <= 10/255.)
         return vec4(255/255.,241/255.,232/255.,1);
     else if (color.r <= 95/255.)
         return vec4(194/255.,195/255.,199/255.,1);

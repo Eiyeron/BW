@@ -22,6 +22,9 @@ function Player:init(x, y)
 
     self.walking = false
     self.walk_cycle_progress = 0
+
+    self.blink_sound = love.audio.newSource("snds/blink.wav")
+    self.blink_sound:setVolume(0.1)
 end
 
 function Player:update(dt, room)
@@ -71,10 +74,15 @@ function Player:update(dt, room)
     end
 
     if self.blinking then
+        local previous_progress = self.blinking_progress
         self.blinking_progress = self.blinking_progress + dt * 5
         if self.blinking_progress >= 1 then
             self.blinking = false
             self.blinking_timer = 4
+        end
+
+        if previous_progress < 0.5 and self.blinking_progress >= 0.5 then
+            self.blink_sound:play()
         end
     else
         self.blinking_timer = self.blinking_timer - dt

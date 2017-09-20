@@ -90,6 +90,7 @@ function Room:draw_bg()
         torch:draw()
     end
 
+    love.graphics.setColor(255,255,255)
     for i, stair in pairs(self.stairs) do
         stair:draw()
     end
@@ -109,17 +110,20 @@ function Room:draw()
         love.graphics.clear(palette[1])
         self:draw_bg()
 
+        love.graphics.setColor(255,255,255)
         ParticleManager:draw()
+        love.graphics.setColor(255,255,255)
         self.player:draw()
 
         self:draw_fg()
 
         love.graphics.setLineWidth(1)
-        love.graphics.setColor(palette[4])
+        love.graphics.setColor(unpack(palette[4]))
         love.graphics.line(0, 64, 240, 64)
     love.graphics.pop()
     love.graphics.setCanvas(previous_canvas)
 
+    love.graphics.setColor(255,255,255)
     love.graphics.draw(common_canvas)
 end
 return Room
