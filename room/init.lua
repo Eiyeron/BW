@@ -21,6 +21,10 @@ function Room:init(tileset_path)
     self.stairs = {}
     self.player = nil
     self.transitions = {}
+    self.torch_sound = love.audio.newSource("snds/torch_fire_crush.ogg")
+    self.torch_sound:setLooping(true)
+    self.torch_sound:setVolume(0.2)
+    self.torch_sound:play()
 
     self.map = sti(tileset_path)
     for _, layer in ipairs(self.map.layers) do

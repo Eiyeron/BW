@@ -6,6 +6,8 @@ local RoomStorage = require("room.storage")
 local Shader = require("shdrs")
 local Layer = require("game.layer")
 
+local hsluv = require("hsluv")
+
 local GameState = State:extend("GameState")
 function GameState:init()
 	self.super.init(self)
@@ -31,11 +33,15 @@ function GameState:init()
     self.room.player = self.player
 
     self:add(self.room)
+    self.time = 0
 
 end
 
 function GameState:update(dt)
     self.super.update(self, dt)
+   
+    self.time = self.time + dt
+
     -- self.room:update(dt)
     -- self.player:update(dt, self.room)
     if love.keyboard.isDown("left") then
@@ -88,6 +94,23 @@ function GameState:update(dt)
 
 end
 
+function GameState:randomPalette()
+    local pal = {}
+    for i=0,3 do
+        local a = hsluv.hsluv.Hsluv.hsluvToRgb({[0]=math.random( 0,360 ), math.random( 0,100 ), math.random( i/4 * 100, (i+1)/4 * 100 )})
+        pal[i] = {a[0]*255, a[1]*255, a[2]*255}
+    end
+    pal[4] = {0,0,0}
+    self.effects_shader:send("palette",
+        {pal[0][1], pal[0][2], pal[0][3]}, 
+        {pal[1][1], pal[1][2], pal[1][3]}, 
+        {pal[2][1], pal[2][2], pal[2][3]}, 
+        {pal[3][1], pal[3][2], pal[3][3]},
+        {pal[4][1], pal[4][2], pal[4][3]}
+
+    )
+end
+
 function GameState:keypressed(key)
     if key == "f1" then
         local screenshot = love.graphics.newScreenshot();
@@ -96,10 +119,17 @@ function GameState:keypressed(key)
         self.effects_shader:reload()
     elseif key == "f3" then
         assert(false, "Test")
+    elseif key == "f4" then
+        self:randomPalette()
     end
 end
 
 function GameState:draw()
+    if self.time > 2 then
+        self.time = self.time % 2.
+        self:randomPalette()
+    end     
+
     love.graphics.setCanvas(self.screen_canvas)
     love.graphics.push()
         love.graphics.clear(0,0,0)

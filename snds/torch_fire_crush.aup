@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="torch_fire_crush_data" version="1.3.0" audacityversion="2.1.3" sel0="0.0000000000" sel1="25.8296371882" vpos="0" h="0.0000000000" zoom="54.3200163320" rate="44100.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags/>
+	<wavetrack name="181563__kingsrow__fire-crackling-01" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="44100" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1139087">
+				<waveblock start="0">
+					<simpleblockfile filename="e000065a.au" len="255236" min="-0.404312" max="0.534053" rms="0.01907"/>
+				</waveblock>
+				<waveblock start="255236">
+					<simpleblockfile filename="e00005b5.au" len="262144" min="-0.141037" max="0.266129" rms="0.017688"/>
+				</waveblock>
+				<waveblock start="517380">
+					<simpleblockfile filename="e000098a.au" len="262144" min="-0.142242" max="0.182007" rms="0.019917"/>
+				</waveblock>
+				<waveblock start="779524">
+					<simpleblockfile filename="e0000c36.au" len="179818" min="-0.139069" max="0.1698" rms="0.020227"/>
+				</waveblock>
+				<waveblock start="959342">
+					<simpleblockfile filename="e0000eec.au" len="179745" min="-0.117523" max="0.107239" rms="0.017855"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<labeltrack name="Piste de marqueurs" numlabels="0" height="73" minimized="0" isSelected="1"/>
+</project>
