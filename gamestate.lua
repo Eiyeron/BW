@@ -113,7 +113,7 @@ function GameState:keypressed(key)
         self.effects_shader:reload()
         self.effects_shader:send("palette", unpack(self.palette))
     elseif key == "f3" then
-        assert(false, "Test")
+        self:addPaletteToSelection()
     elseif key == "f4" then
         self:randomPalette()
     end
@@ -135,6 +135,16 @@ function GameState:drawPalette()
         love.graphics.setColor(unpack(self.palette[i]))
         love.graphics.rectangle("fill", 1 + 8*(i-1), 65, 8, 31)
     end
+end
+
+function GameState:addPaletteToSelection()
+    local file = love.filesystem.newFile("palettes.txt", "a")
+    local colors = {}
+    for i=1,4 do
+        colors[i] = string.format("#%02X%02X%02X", self.palette[i][1], self.palette[i][2], self.palette[i][3])
+    end
+    file:write(string.format("%s\n", table.concat(colors, ", ")))
+    file:close()
 end
 
 function GameState:draw()
