@@ -24,7 +24,7 @@ function GameState:init()
     end
     test[5] = {0,0,0}
     self.effects_shader:send("palette", unpack(test))
-    self.palette = palette
+    self.palette = test
     self.player = Player(64, 25)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(self.pico8)
@@ -96,13 +96,13 @@ function GameState:randomPalette()
     local pal = {}
     for i=0,3 do
         local a = hsluv.hsluv_to_rgb({math.random( 0,360 ), math.random( 0,100 ), math.random( i/4 * 100, (i+1)/4 * 100 )})
-        pal[i+1] = {a[1]*255, a[2]*255, a[3]*255}
+        pal[i+1] = {math.floor(a[1]*255), math.floor(a[2]*255), math.floor(a[3]*255)}
     end
     pal[5] = {0,0,0}
     self.effects_shader:send("palette",
         unpack(pal)
     )
-    self.palette = {pal[1], pal[2], pal[3], pal[4] }
+    self.palette = pal
 end
 
 function GameState:keypressed(key)
@@ -111,6 +111,7 @@ function GameState:keypressed(key)
         screenshot:encode('png', os.time() .. '.png');
     elseif key == "f2" then
         self.effects_shader:reload()
+        self.effects_shader:send("palette", unpack(self.palette))
     elseif key == "f3" then
         assert(false, "Test")
     elseif key == "f4" then
