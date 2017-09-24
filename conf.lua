@@ -10,6 +10,7 @@ function love.conf(t)
 	t.dependencies = {
         "30log ~> 1.3",
         "sti == scm-1",
-        "flux == scm-1"
-	}
+        "flux == scm-1",
+        "hsluv ~> 0.1"
+    }
 end

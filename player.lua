@@ -24,7 +24,7 @@ function Player:init(x, y)
     self.walk_cycle_progress = 0
 
     self.blink_sound = love.audio.newSource("snds/blink.wav")
-    self.blink_sound:setVolume(0.1)
+    self.blink_sound:setVolume(0.05)
 end
 
 function Player:update(dt, room)
