@@ -28,6 +28,9 @@ function Player:init(x, y)
 end
 
 function Player:update(dt, room)
+    self.x = self.x + self.dx * dt
+    self.y = self.y + self.dy * dt
+
     if self.state == "ground" then
         self.dy = self.dy + 1
         if self.y >= 63 - 16 then
@@ -38,8 +41,6 @@ function Player:update(dt, room)
         self.dy = 0
     end
 
-    self.x = self.x + self.dx * dt
-    self.y = self.y + self.dy * dt
 
     local middle_x = self.x + 4
     if self.state == "ground" then
@@ -63,7 +64,7 @@ function Player:update(dt, room)
             end
         end
     elseif self.state == "stair" then
-        if middle_x < self.stair.start_x or middle_x > self.stair.end_x then
+        if middle_x < self.stair.start_x - 0.5 or middle_x > self.stair.end_x+0.5 then
             self.state = "ground"
             self.stair = nil
         elseif self.stair.orientation == "left" then
