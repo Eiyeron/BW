@@ -24,6 +24,7 @@ function GameState:init()
     end
     test[5] = {0,0,0}
     self.effects_shader:send("palette", unpack(test))
+    self.palette = palette
     self.player = Player(64, 25)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(self.pico8)
@@ -95,17 +96,13 @@ function GameState:randomPalette()
     local pal = {}
     for i=0,3 do
         local a = hsluv.hsluv_to_rgb({math.random( 0,360 ), math.random( 0,100 ), math.random( i/4 * 100, (i+1)/4 * 100 )})
-        pal[i] = {a[1]*255, a[2]*255, a[3]*255}
+        pal[i+1] = {a[1]*255, a[2]*255, a[3]*255}
     end
-    pal[4] = {0,0,0}
+    pal[5] = {0,0,0}
     self.effects_shader:send("palette",
-        {pal[0][1], pal[0][2], pal[0][3]},
-        {pal[1][1], pal[1][2], pal[1][3]},
-        {pal[2][1], pal[2][2], pal[2][3]},
-        {pal[3][1], pal[3][2], pal[3][3]},
-        {pal[4][1], pal[4][2], pal[4][3]}
-
+        unpack(pal)
     )
+    self.palette = {pal[1], pal[2], pal[3], pal[4] }
 end
 
 function GameState:keypressed(key)
@@ -118,6 +115,24 @@ function GameState:keypressed(key)
         assert(false, "Test")
     elseif key == "f4" then
         self:randomPalette()
+    end
+end
+
+function GameState:drawPalette()
+    love.graphics.print("-Palette-", 0, 30)
+    love.graphics.rectangle("line", 1, 64, 34, 34)
+    for i=1,4 do
+        love.graphics.setColor(255,255,255)
+        love.graphics.print(string.format(
+                "#%02X%02X%02X",
+                self.palette[i][1],
+                self.palette[i][2],
+                self.palette[i][3]
+            ),
+            4, 30+6*i
+        )
+        love.graphics.setColor(unpack(self.palette[i]))
+        love.graphics.rectangle("fill", 1 + 8*(i-1), 65, 8, 31)
     end
 end
 
@@ -152,6 +167,7 @@ function GameState:draw()
     love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
     love.graphics.print(love.timer.getDelta(),0,13)
 
+    self:drawPalette()
 end
 
 return GameState
