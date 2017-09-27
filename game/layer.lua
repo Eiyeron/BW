@@ -15,12 +15,12 @@ function Layer:add(object)
 end
 
 function Layer:remove(obj)
-	for i,v in ipairs(self.objects) do
-		if v == obj then
-			table.remove(self.objects, i)
-			return
-		end
-	end
+    for i,v in ipairs(self.objects) do
+        if v == obj then
+            table.remove(self.objects, i)
+            return
+        end
+    end
 end
 
 function Layer:update(dt)

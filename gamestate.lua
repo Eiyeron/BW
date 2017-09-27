@@ -10,7 +10,7 @@ local hsluv = require("hsluv")
 
 local GameState = State:extend("GameState")
 function GameState:init()
-	self.super.init(self)
+    self.super.init(self)
 
     self.screen_canvas = love.graphics.newCanvas(240, 128)
     self.screen_canvas:setFilter("nearest")

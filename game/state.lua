@@ -1,5 +1,5 @@
 --[[
-	State class inspired by Haxeflixel's FlxState
+    State class inspired by Haxeflixel's FlxState
 ]]--
 
 local Layer = require("game.layer")
