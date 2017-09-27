@@ -1,3 +1,6 @@
+# Needed for luarocks-imcompatible settings
+*.rockspec
+
 *.rock
 /rocks
 
