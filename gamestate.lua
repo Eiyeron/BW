@@ -35,11 +35,11 @@ function GameState:init()
 
     self:add(self.room)
 
-    self.time = 0
+    self.shader_time = 0
 end
 
 function GameState:update(dt)
-    self.time = self.time + dt
+    self.shader_time = (self.shader_time + dt) % (math.pi * 2)
     self.super.update(self, dt)
 
     -- self.room:update(dt)
@@ -155,7 +155,7 @@ function GameState:draw()
         love.graphics.clear(0,0,0)
 
         self.effects_shader:use({
-            {"time", self.time},
+            {"time", self.shader_time},
             {"sampling_factor", 0.5},
             {"amplitude", {0,0}},
             {"inverse", false}
@@ -163,7 +163,7 @@ function GameState:draw()
         self.room:draw()
         -- Reflect
         self.effects_shader:use({
-            {"time", self.time},
+            {"time", self.shader_time},
             {"sampling_factor", 0.5},
             {"amplitude", {0,8/128}},
             {"inverse", true}

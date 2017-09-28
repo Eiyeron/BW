@@ -5,6 +5,7 @@
 
 local class = require("30log")
 local _LoveCallbacks = require("utils.love_callbacks")
+local InputHandler = require("input.handler")
 
 
 local Game = class "Game"
@@ -12,6 +13,7 @@ function Game:init(state)
     self.state = state
     self:register_callbacks()
     self.next_state = nil
+    self.input_handler = InputHandler()
     love.update = function(dt) self:update(dt) end
     love.draw = function() self:draw() end
 
@@ -22,13 +24,14 @@ function Game:init(state)
 end
 
 function Game:register_callbacks()
-    for i,callback in ipairs(_LoveCallbacks) do
+    for _,callback in ipairs(_LoveCallbacks) do
         if self.state[callback] and (type(self.state[callback]) == "function" or getmetatable(self.state[callback]).__call ~= nil) then
             love[callback] = function(...) self.state[callback](self.state, ...) end
         else
             love[callback] = nil
         end
     end
+
 end
 
 function Game:update(dt)
@@ -53,6 +56,23 @@ function Game:draw()
         return
     end
     love.timer.sleep(self.next_time - cur_time)
+end
+
+function Game:keypressed(key, scancode, isrepeat)
+    if not self.isrepeat then
+        self.input_handler:press(key)
+        self.input_handler:down(key)
+    end
+    if self.state.keypressed then
+        self.state:keypressed(key, scancode, isrepeat)
+    end
+end
+
+function Game:keyreleased(key, scancode)
+    self.input_handler:up(key)
+    if self.state.keyreleased then
+        self.state:keyreleased(key, scancode)
+    end
 end
 
 -- To be called by GameState
