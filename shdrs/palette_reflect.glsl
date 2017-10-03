@@ -18,9 +18,11 @@ vec2 distort(vec2 texture_coords)
 vec4 color_replace_inv(Image texture, vec2 texture_coords)
 {
     vec3 color = Texel(texture, texture_coords).rgb;
-    vec3 colorDown = Texel(texture, texture_coords + vec2(0,1/(128*2.))).rgb;
-    vec3 colorUp = Texel(texture, texture_coords + vec2(0,-1/(128*2.))).rgb;
-    color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
+    if (sampling_factor != 0.0) {
+        vec3 colorDown = Texel(texture, texture_coords + vec2(0,1/(128*2.))).rgb;
+        vec3 colorUp = Texel(texture, texture_coords + vec2(0,-1/(128*2.))).rgb;
+        color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
+    }
     for (int i = 0; i < PALETTE_SIZE; i++)
         if (color.r <= i/3.)
             return vec4(palette[(PALETTE_SIZE-1)-i].rgb/255.,1);
@@ -31,9 +33,11 @@ vec4 color_replace_inv(Image texture, vec2 texture_coords)
 vec4 color_replace(Image texture, vec2 texture_coords)
 {
     vec3 color = Texel(texture, texture_coords).rgb;
-    vec3 colorDown = Texel(texture, texture_coords + vec2(0,1/(128*2.))).rgb;
-    vec3 colorUp = Texel(texture, texture_coords + vec2(0,-1/(128*2.))).rgb;
-    color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
+    if (sampling_factor != 0.0) {
+        vec3 colorDown = Texel(texture, texture_coords + vec2(0,1/(128*2.))).rgb;
+        vec3 colorUp = Texel(texture, texture_coords + vec2(0,-1/(128*2.))).rgb;
+        color = color * (1 - sampling_factor*2) + colorDown * sampling_factor + colorUp * sampling_factor;
+    }
     for (int i = 0; i < PALETTE_SIZE; i++)
         if (color.r <= i/(PALETTE_SIZE-1.))
             return vec4(palette[i].rgb/255.,1);
