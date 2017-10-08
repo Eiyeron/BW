@@ -124,7 +124,7 @@ function Room:draw()
         self:draw_fg()
 
         love.graphics.setLineWidth(1)
-        love.graphics.setColor(unpack(palette[4]))
+        love.graphics.setColor(255,0,0)
         love.graphics.line(0, 64, 240, 64)
     love.graphics.pop()
     love.graphics.setShader(previous_shader)

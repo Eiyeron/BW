@@ -5,6 +5,7 @@ local Torch = require("objs.torch")
 local RoomStorage = require("room.storage")
 local Shader = require("shdrs")
 local Layer = require("game.layer")
+local Textbox = require("textbox")
 
 local hsluv = require("hsluv")
 
@@ -33,7 +34,10 @@ function GameState:init()
     self.room = self.room_storage:get("test")
     self.room.player = self.player
 
+    self.textbox = Textbox()
+
     self:add(self.room)
+    self:add(self.textbox)
 
     self.shader_time = 0
 end
@@ -118,6 +122,9 @@ function GameState:keypressed(key)
         self:addPaletteToSelection()
     elseif key == "f4" then
         self:randomPalette()
+    elseif key == "f5" then
+        self.textbox:enqueue("The Game hahahahah.")
+        self.textbox.state = "appearing"
     end
 end
 
@@ -137,6 +144,15 @@ function GameState:drawPalette()
         love.graphics.setColor(unpack(self.palette[i]))
         love.graphics.rectangle("fill", 1 + 8*(i-1), 66, 8, 31)
     end
+end
+
+function GameState:drawTextboxDebug()
+    love.graphics.print("-Textbox-",0,120)
+    love.graphics.print("State: "..self.textbox.state,0,127)
+    love.graphics.print("Apearing: "..self.textbox.appearing_progress .. "/" .. self.textbox.appearing_speed,0,134)
+    love.graphics.print("Dispearing: "..self.textbox.disappearing_progress .. "/" .. self.textbox.disappearing_speed,0,141)
+    love.graphics.print("Index: "..self.textbox.current_text_index,0,150)
+    love.graphics.print("Timer: "..self.textbox.character_timer, 0, 157)
 end
 
 function GameState:addPaletteToSelection()
@@ -161,6 +177,7 @@ function GameState:draw()
             {"inverse", false}
         })
         self.room:draw()
+        self.textbox:draw()
         -- Reflect
         self.effects_shader:use({
             {"time", self.shader_time},
@@ -168,7 +185,9 @@ function GameState:draw()
             {"amplitude", {0,8/128}},
             {"inverse", true}
         })
+        love.graphics.setColor(255,255,255)
         love.graphics.draw(self.room.canvas,0,128,0,1,-1)
+        love.graphics.draw(self.textbox.canvas,0,128,0,1,-1)
         love.graphics.setShader()
 
     love.graphics.pop()
@@ -176,11 +195,12 @@ function GameState:draw()
     love.graphics.setColor(255,255,255)
     love.graphics.draw(self.screen_canvas,0,0, 0, 4,4)
 
-    love.graphics.print(love.timer.getFPS(), 0, 1)
-    love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
-    love.graphics.print(love.timer.getDelta(),0,13)
+        love.graphics.print(love.timer.getFPS(), 0, 1)
+        love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
+        love.graphics.print(love.timer.getDelta(),0,13)
 
-    self:drawPalette()
+        self:drawTextboxDebug()
+        self:drawPalette()
 end
 
 return GameState
