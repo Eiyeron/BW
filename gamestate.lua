@@ -123,7 +123,8 @@ function GameState:keypressed(key)
     elseif key == "f4" then
         self:randomPalette()
     elseif key == "f5" then
-        self.textbox:enqueue("The Game hahahahah.")
+        self.textbox:enqueue("The Game.")
+        self.textbox:enqueue("The Game (bis).")
         self.textbox.state = "appearing"
     end
 end
@@ -148,10 +149,14 @@ end
 
 function GameState:drawTextboxDebug()
     love.graphics.print("-Textbox-",0,120)
-    love.graphics.print("State: "..self.textbox.state,0,127)
+    if self.textbox.state == "active" then
+        love.graphics.print("State: "..self.textbox.state.." ("..self.textbox.substate..")",0,127)
+    else
+        love.graphics.print("State: "..self.textbox.state,0,127)
+    end
     love.graphics.print("Apearing: "..self.textbox.appearing_progress .. "/" .. self.textbox.appearing_speed,0,134)
     love.graphics.print("Dispearing: "..self.textbox.disappearing_progress .. "/" .. self.textbox.disappearing_speed,0,141)
-    love.graphics.print("Index: "..self.textbox.current_text_index,0,150)
+    love.graphics.print("Index: "..self.textbox.current_text_index[1].."=>"..self.textbox.current_text_start[1],0,150)
     love.graphics.print("Timer: "..self.textbox.character_timer, 0, 157)
 end
 
