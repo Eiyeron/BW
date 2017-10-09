@@ -165,7 +165,6 @@ function Textbox:update(dt)
                 else
                     self.substate = TextBoxSubState.PRINTING
                 end
-                print(self.substate)
             end
         elseif self.substate == TextBoxSubState.DONE then
             self.character_timer = 0
