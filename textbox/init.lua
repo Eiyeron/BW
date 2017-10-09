@@ -101,8 +101,10 @@ Textbox.init = {
 
 }
 
-function Textbox:enqueue(text)
-    self.text_queue[#self.text_queue + 1] = text
+function Textbox:enqueue(...)
+    for _,text in ipairs({...}) do
+        self.text_queue[#self.text_queue + 1] = text
+    end
 end
 
 function Textbox:update(dt)

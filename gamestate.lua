@@ -126,8 +126,7 @@ function GameState:keypressed(key)
     elseif key == "f4" then
         self:randomPalette()
     elseif key == "f5" then
-        self.textbox:enqueue("The Game.")
-        self.textbox:enqueue("The Game (bis).")
+        self.textbox:enqueue("The Game.","The Game (bis).")
         self.textbox.state = "appearing"
     end
 end
