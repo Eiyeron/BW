@@ -9,6 +9,8 @@ local Textbox = require("textbox")
 
 local hsluv = require("hsluv")
 
+local PaletteExport = require( "utils.palette_export" )
+
 local GameState = State:extend("GameState")
 function GameState:init()
     self.super.init(self)
@@ -114,12 +116,13 @@ end
 function GameState:keypressed(key)
     if key == "f1" then
         local screenshot = love.graphics.newScreenshot();
-        screenshot:encode('png', os.time() .. '.png');
+        screenshot:newImageData():encode('png', os.time() .. '.png');
     elseif key == "f2" then
         self.effects_shader:reload()
         self.effects_shader:send("palette", unpack(self.palette))
     elseif key == "f3" then
-        self:addPaletteToSelection()
+        PaletteExport.drawPaletteToCanvas(self.palette):newImageData():encode('png', "palette"..os.time()..'.png')
+        PaletteExport.addToSelection(self.palette)
     elseif key == "f4" then
         self:randomPalette()
     elseif key == "f5" then
@@ -130,21 +133,9 @@ function GameState:keypressed(key)
 end
 
 function GameState:drawPalette()
-    love.graphics.print("-Palette-", 0, 30)
-    love.graphics.rectangle("line", 1, 64, 34, 34)
-    for i=1,4 do
-        love.graphics.setColor(255,255,255)
-        love.graphics.print(string.format(
-                "#%02X%02X%02X",
-                self.palette[i][1],
-                self.palette[i][2],
-                self.palette[i][3]
-            ),
-            4, 30+6*i
-        )
-        love.graphics.setColor(unpack(self.palette[i]))
-        love.graphics.rectangle("fill", 1 + 8*(i-1), 66, 8, 31)
-    end
+    local pic = PaletteExport.drawPaletteToCanvas(self.palette)
+    love.graphics.setColor(255,255,255)
+    love.graphics.draw(pic, 0,30)
 end
 
 function GameState:drawTextboxDebug()
@@ -158,16 +149,6 @@ function GameState:drawTextboxDebug()
     love.graphics.print("Dispearing: "..self.textbox.disappearing_progress .. "/" .. self.textbox.disappearing_speed,0,141)
     love.graphics.print("Index: "..self.textbox.current_text_index[1].."=>"..self.textbox.current_text_start[1],0,150)
     love.graphics.print("Timer: "..self.textbox.character_timer, 0, 157)
-end
-
-function GameState:addPaletteToSelection()
-    local file = love.filesystem.newFile("palettes.txt", "a")
-    local colors = {}
-    for i=1,4 do
-        colors[i] = string.format("#%02X%02X%02X", self.palette[i][1], self.palette[i][2], self.palette[i][3])
-    end
-    file:write(string.format("%s\n", table.concat(colors, ", ")))
-    file:close()
 end
 
 function GameState:draw()
