@@ -27,7 +27,14 @@ function GameState:init()
     test[5] = {0,0,0}
     self.effects_shader:send("palette", unpack(test))
     self.palette = test
-    self.previous_palette = test
+    self.previous_palette = {}
+    for i=1,4 do
+        self.previous_palette[i] = {}
+        for c=1,3 do
+            self.previous_palette[i][c] = test[i][c]
+        end
+    end
+
     self.next_palette = nil
     self.palette_transition = 0
     self.palette_duration = 1 -- seconds
@@ -60,6 +67,8 @@ function GameState:update(dt)
             self.palette_transition = 0
         else
             local progress = self.palette_transition / self.palette_duration
+            -- Sine interpolation = x:-> sin(x *π -π/2 )/2+0.5, x∈[0,1]
+            progress = math.sin(progress*math.pi-math.pi/2)/2+0.5
             for i=1,4 do
                 for c=1,3 do
                     self.palette[i][c] = mathutil.lerp(self.previous_palette[i][c], self.next_palette[i][c], progress)
@@ -70,8 +79,6 @@ function GameState:update(dt)
             unpack(self.palette)
         )
     end
-    -- self.room:update(dt)
-    -- self.player:update(dt, self.room)
     if love.keyboard.isDown("left") then
         self.player.dx = -30
         self.player.facing = "left"
@@ -133,7 +140,11 @@ function GameState:randomPalette()
         pal[i+1] = {math.floor(a[1]*255), math.floor(a[2]*255), math.floor(a[3]*255)}
     end
     pal[5] = {0,0,0}
-    self.previous_palette = self.palette or pal
+    for i=1,4 do
+        for c=1,3 do
+            self.previous_palette[i][c] = self.palette[i][c]
+        end
+    end
     self.next_palette = pal
     self.palette_transition = 0
 end
@@ -206,12 +217,16 @@ function GameState:draw()
     love.graphics.setColor(255,255,255)
     love.graphics.draw(self.screen_canvas,0,0, 0, 4,4)
 
-        love.graphics.print(love.timer.getFPS(), 0, 1)
-        love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
-        love.graphics.print(love.timer.getDelta(),0,13)
+    love.graphics.print(love.timer.getFPS(), 0, 1)
+    love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
+    love.graphics.print(love.timer.getDelta(),0,13)
 
-        self:drawTextboxDebug()
-        self:drawPalette()
+    self:drawTextboxDebug()
+    self:drawPalette()
+
+    love.graphics.print("table: "..tostring(self.previous_palette), 0, 175)
+    love.graphics.print("table: "..tostring(self.palette), 0, 183)
+    love.graphics.print("table: "..tostring(self.next_palette), 0, 190)
 end
 
 return GameState
