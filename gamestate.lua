@@ -6,6 +6,7 @@ local Shader = require("shdrs")
 local Textbox = require("textbox")
 
 local hsluv = require("hsluv")
+local mathutil = require("mathutil")
 
 local PaletteExport = require( "utils.palette_export" )
 
@@ -26,6 +27,11 @@ function GameState:init()
     test[5] = {0,0,0}
     self.effects_shader:send("palette", unpack(test))
     self.palette = test
+    self.previous_palette = test
+    self.next_palette = nil
+    self.palette_transition = 0
+    self.palette_duration = 1 -- seconds
+
     self.player = Player(64, 25)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(self.pico8)
@@ -46,6 +52,24 @@ function GameState:update(dt)
     self.shader_time = (self.shader_time + dt) % (math.pi * 2)
     self.super.update(self, dt)
 
+    if self.next_palette then
+        self.palette_transition = self.palette_transition + dt
+        if self.palette_transition > self.palette_duration then
+            self.palette = self.next_palette
+            self.next_palette = nil
+            self.palette_transition = 0
+        else
+            local progress = self.palette_transition / self.palette_duration
+            for i=1,4 do
+                for c=1,3 do
+                    self.palette[i][c] = mathutil.lerp(self.previous_palette[i][c], self.next_palette[i][c], progress)
+                end
+            end
+        end
+        self.effects_shader:send("palette",
+            unpack(self.palette)
+        )
+    end
     -- self.room:update(dt)
     -- self.player:update(dt, self.room)
     if love.keyboard.isDown("left") then
@@ -109,10 +133,9 @@ function GameState:randomPalette()
         pal[i+1] = {math.floor(a[1]*255), math.floor(a[2]*255), math.floor(a[3]*255)}
     end
     pal[5] = {0,0,0}
-    self.effects_shader:send("palette",
-        unpack(pal)
-    )
-    self.palette = pal
+    self.previous_palette = self.palette or pal
+    self.next_palette = pal
+    self.palette_transition = 0
 end
 
 function GameState:keypressed(key)
