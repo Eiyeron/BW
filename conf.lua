@@ -11,6 +11,7 @@ function love.conf(t)
         "30log ~> 1.3",
         "sti == scm-1",
         "flux == scm-1",
-        "hsluv ~> 0.1"
+        "hsluv ~> 0.1",
+        "i18n ~> 0.9"
     }
 end
