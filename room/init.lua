@@ -1,6 +1,5 @@
 local class = require("30log")
 local sti = require("sti")
-local palette = require("palette")
 
 -- Find a way to automatically register objects?
 local Torch = require("objs.torch")
@@ -35,7 +34,13 @@ function Room:init(tileset_path)
     for _, object in ipairs(self.map.layers.objects.objects) do
         assert(
             object.type ~= nil and object.type ~= "",
-            string.format(object_assert_message_format, tileset_path, object.id, object.name or "<unnamed>", "doesn't have a type.")
+            string.format(
+                object_assert_message_format,
+                tileset_path,
+                object.id,
+                object.name or "<unnamed>",
+                "doesn't have a type."
+            )
         )
         local otype = string.lower(object.type)
         -- Torch
@@ -47,13 +52,21 @@ function Room:init(tileset_path)
                 object.properties.backlight
             )
         elseif otype == "stair" then
-            assert(object.shape == "polyline", string.format(object_assert_message_format, tileset_path, object.id, object.name or "<unnamed>", "isn't a polyline."))
+            assert(object.shape == "polyline", string.format(
+                object_assert_message_format,
+                tileset_path,
+                object.id,
+                object.name or "<unnamed>",
+                "isn't a polyline."
+            ))
             -- Making sure to not see the polyline
             object.visible = false
 
             -- Creating the object
-            local lowest_point = object.polyline[1].y > object.polyline[2].y and object.polyline[1] or object.polyline[2]
-            local highest_point = object.polyline[1].y < object.polyline[2].y and object.polyline[1] or object.polyline[2]
+            local lowest_point = object.polyline[1].y > object.polyline[2].y
+                and object.polyline[1] or object.polyline[2]
+            local highest_point = object.polyline[1].y < object.polyline[2].y
+                and object.polyline[1] or object.polyline[2]
 
             local start_x = object.polyline[1].x
             local end_x = object.polyline[2].x
@@ -74,7 +87,7 @@ function Room:init(tileset_path)
 end
 
 function Room:update(dt)
-    for i, torch in ipairs(self.torchs) do
+    for _, torch in ipairs(self.torchs) do
         torch:update(dt)
     end
     self.player:update(dt, self)
@@ -83,19 +96,19 @@ end
 
 function Room:draw_bg()
     love.graphics.setColor(255,255,255)
-    for i, torch in pairs(self.torchs) do
+    for _, torch in pairs(self.torchs) do
         torch:draw_backlight()
     end
     love.graphics.setColor(255,255,255)
     self.map:drawLayer(self.map.layers.bg)
     love.graphics.setColor(255,255,255)
     self.map:drawLayer(self.map.layers.objects)
-    for i, torch in pairs(self.torchs) do
+    for _, torch in pairs(self.torchs) do
         torch:draw()
     end
 
     love.graphics.setColor(255,255,255)
-    for i, stair in pairs(self.stairs) do
+    for _, stair in pairs(self.stairs) do
         stair:draw()
     end
 end

@@ -1,23 +1,7 @@
 local class = require "30log"
 local mathutil = require("mathutil")
 
-local TextBoxState = {
-    -- Should be invisible
-    DISABLED = "disabled",
-    -- Should be appearing, probably empty
-    APPEARING = "appearing",
-    -- Drawign text and stuff
-    ACTIVE = "active",
-    -- Should progressively disappear
-    DISAPPEARING = "disappearing"
-}
-
-local TextBoxSubState = {
-    PRINTING = "printing",
-    FULL = "full",
-    END_OF_LINE = "end_of_line",
-    DONE = "done"
-}
+local TextBoxState, TextBoxSubState = unpack(require( "textbox.states" ))
 
 --[[
     States
@@ -122,7 +106,11 @@ function Textbox:update(dt)
             if self.character_timer >= 1/self.speed then
                 self.character_timer = self.character_timer - 1/self.speed
                 self.current_text_index[self.current_line] = self.current_text_index[self.current_line] + 1
-                self.lines[self.current_line]:set(string.sub( self.text_queue[1], self.current_text_start[self.current_line], self.current_text_index[self.current_line] ))
+                self.lines[self.current_line]:set(string.sub(
+                    self.text_queue[1],
+                    self.current_text_start[self.current_line],
+                    self.current_text_index[self.current_line]
+                ))
 
                 if self.current_text_index[self.current_line] >= #self.text_queue[1] then
                     self.substate = TextBoxSubState.END_OF_LINE

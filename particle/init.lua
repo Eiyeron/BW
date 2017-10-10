@@ -25,7 +25,7 @@ function Particle:update(dt)
 end
 
 -- Override this function with the drawing you want.
-function Particle:draw(dt)
+function Particle.draw()
 end
 
 return Particle

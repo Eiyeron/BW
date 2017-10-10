@@ -1,10 +1,8 @@
 local State = require("game.state")
 local palette = require("palette")
 local Player = require("player")
-local Torch = require("objs.torch")
 local RoomStorage = require("room.storage")
 local Shader = require("shdrs")
-local Layer = require("game.layer")
 local Textbox = require("textbox")
 
 local hsluv = require("hsluv")
@@ -103,7 +101,11 @@ end
 function GameState:randomPalette()
     local pal = {}
     for i=0,3 do
-        local a = hsluv.hsluv_to_rgb({math.random( 0,360 ), math.random( 0,100 ), math.random( i/4 * 100, (i+1)/4 * 100 )})
+        local a = hsluv.hsluv_to_rgb({
+            math.random( 0,360 ),
+            math.random( 0,100 ),
+            math.random( i/4 * 100, (i+1)/4 * 100 )
+        })
         pal[i+1] = {math.floor(a[1]*255), math.floor(a[2]*255), math.floor(a[3]*255)}
     end
     pal[5] = {0,0,0}
@@ -145,7 +147,8 @@ function GameState:drawTextboxDebug()
         love.graphics.print("State: "..self.textbox.state,0,127)
     end
     love.graphics.print("Apearing: "..self.textbox.appearing_progress .. "/" .. self.textbox.appearing_speed,0,134)
-    love.graphics.print("Dispearing: "..self.textbox.disappearing_progress .. "/" .. self.textbox.disappearing_speed,0,141)
+    love.graphics.print("Dispearing: "..self.textbox.disappearing_progress .. "/" .. self.textbox.disappearing_speed,
+        0,141)
     love.graphics.print("Index: "..self.textbox.current_text_index[1].."=>"..self.textbox.current_text_start[1],0,150)
     love.graphics.print("Timer: "..self.textbox.character_timer, 0, 157)
 end

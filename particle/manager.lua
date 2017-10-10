@@ -1,7 +1,6 @@
 local class = require("30log")
-local Particle = require("particle")
 
-ParticleManager = class "ParticleManager"
+local ParticleManager = class "ParticleManager"
 function ParticleManager:init()
     self.parts = {}
 end
@@ -21,7 +20,7 @@ end
 
 function ParticleManager:draw()
     for _, part in pairs(self.parts) do
-        part:draw(dt)
+        part:draw()
     end
 end
 

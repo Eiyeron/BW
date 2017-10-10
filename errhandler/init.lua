@@ -1,7 +1,7 @@
 local function error_printer(msg, layer)
     print((debug.traceback("Error: " .. tostring(msg), 1+(layer or 1)):gsub("\n[^\n]+$", "")))
 end
- 
+
 function love.errhand(msg)
     msg = tostring(msg)
     error_printer(msg, 2)
@@ -9,14 +9,14 @@ function love.errhand(msg)
     if not love.window or not love.graphics or not love.event then
         return
     end
- 
+
     if not love.graphics.isCreated() or not love.window.isOpen() then
         local success, status = pcall(love.window.setMode, 800, 600)
         if not success or not status then
             return
         end
     end
- 
+
     -- Reset state.
     if love.mouse then
         love.mouse.setVisible(true)
@@ -25,24 +25,24 @@ function love.errhand(msg)
     end
     if love.joystick then
         -- Stop all joystick vibrations.
-        for i,v in ipairs(love.joystick.getJoysticks()) do
+        for _,v in ipairs(love.joystick.getJoysticks()) do
             v:setVibration()
         end
     end
     if love.audio then love.audio.stop() end
     love.graphics.reset()
-    local font = love.graphics.setNewFont(math.floor(love.window.toPixels(14)))
- 
+    love.graphics.setNewFont(math.floor(love.window.toPixels(14)))
+
     love.graphics.setBackgroundColor(118, 10, 15)
     love.graphics.setColor(255, 255, 255, 255)
- 
+
     love.graphics.clear(love.graphics.getBackgroundColor())
     love.graphics.origin()
 
     -- Going through the stack and files to get the erroring line
     local err = {}
 
-    -- Keeping the same error header for no reason 
+    -- Keeping the same error header for no reason
     table.insert(err, "Error\n")
     table.insert(err, msg.."\n\n")
     table.insert(err, "stack traceback:")
@@ -52,10 +52,10 @@ function love.errhand(msg)
     for line in debug.traceback("", 2):gmatch("([^\n]*)\n?") do
         -- trimming the left space
         line = line:gsub("^(%s+)", "")
-        if add_to_list then 
+        if add_to_list then
             -- getting the line and filename from the line.
             local _,_, file, lineno = string.find(line, "([^:]+):(%d*)")
-            -- If the current function wasn't native C, then add it to thje 
+            -- If the current function wasn't native C, then add it to thje
             if file and file ~= "C" and love.filesystem.exists(file) then
                 -- Opening the file and getting the line
                 local target_lineno = tonumber(lineno)
@@ -74,15 +74,15 @@ function love.errhand(msg)
             end
 
         end
-        -- If we went past the 
+        -- If we went past the
         add_to_list = add_to_list or line == "stack traceback:"
     end
- 
+
     local p = table.concat(err, "\n")
- 
+
     p = string.gsub(p, "\t", "")
     p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
- 
+
     local function draw()
         local pos = love.window.toPixels(70)
         love.graphics.clear(love.graphics.getBackgroundColor())
@@ -91,11 +91,11 @@ function love.errhand(msg)
         love.graphics.present()
 
     end
- 
+
     while true do
         love.event.pump()
- 
-        for e, a, b, c in love.event.poll() do
+
+        for e, a, _, _ in love.event.poll() do
             if e == "quit" then
                 return
             elseif e == "keypressed" and a == "escape" then
@@ -110,12 +110,12 @@ function love.errhand(msg)
                 end
             end
         end
- 
+
         draw()
- 
+
         if love.timer then
             love.timer.sleep(0.1)
         end
     end
- 
+
 end

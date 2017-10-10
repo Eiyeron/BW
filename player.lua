@@ -115,8 +115,6 @@ end
 
 function Player:draw()
     love.graphics.setColor(255,255,255)
-    local middle_x = self.x + 4
-    local body_quad = love.graphics.newQuad(4 * 8, 0, 8, 8, self.tex:getWidth(), self.tex:getHeight())
     local fx, fy = self.x, self.y
     local face_scale = self.facing == "left" and -1 or 1
     local face_offset = self.facing == "left" and 8 or 0

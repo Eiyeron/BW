@@ -7,7 +7,7 @@ local Layer = require("game.layer")
 local State = Layer:extend("State")
 
 
-function State:on_exit(next_state)
+function State.on_exit(--[[self, next_state]])
 end
 
 return State

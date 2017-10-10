@@ -25,7 +25,9 @@ end
 
 function Game:register_callbacks()
     for _,callback in ipairs(_LoveCallbacks) do
-        if self.state[callback] and (type(self.state[callback]) == "function" or getmetatable(self.state[callback]).__call ~= nil) then
+        if self.state[callback]
+            and (type(self.state[callback]) == "function" or getmetatable(self.state[callback]).__call ~= nil) then
+
             love[callback] = function(...) self.state[callback](self.state, ...) end
         else
             love[callback] = nil

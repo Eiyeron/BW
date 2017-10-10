@@ -24,7 +24,7 @@ function Layer:remove(obj)
 end
 
 function Layer:update(dt)
-    for i,object in ipairs(self.objects) do
+    for _,object in ipairs(self.objects) do
         object:update(dt)
     end
 end
@@ -33,8 +33,8 @@ function Layer:draw()
     local previous_canvas = love.graphics.getCanvas()
 
     if self.canvas then
-        love.graphics.setCanvas(canvas)
-        for i,object in ipairs(self.objects) do
+        love.graphics.setCanvas(self.canvas)
+        for _,object in ipairs(self.objects) do
             if object.draw then
                 object:draw()
             end
@@ -42,7 +42,7 @@ function Layer:draw()
         love.graphics.setCanvas(previous_canvas)
         love.graphics.draw(self.canvas)
     else
-        for i,object in ipairs(self.objects) do
+        for _,object in ipairs(self.objects) do
             if object.draw then
                 object:draw()
             end
@@ -51,7 +51,7 @@ function Layer:draw()
 end
 
 function Layer:foreach(unary)
-    for i,object in ipairs(self.objects) do
+    for _,object in ipairs(self.objects) do
         unary(object)
     end
 end

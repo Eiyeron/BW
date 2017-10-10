@@ -16,7 +16,7 @@ function Shader:reload()
         self.shaderProgram = love.graphics.newShader(shader)
         self.ok = true
     end, function(err)
-        print(string.format("Error loading shader %s : %s", filename, err))
+        print(string.format("Error loading shader %s : %s", self.filename, err))
     end)
 end
 
@@ -27,15 +27,15 @@ function Shader:send(...)
     end, function(err)
         print(string.format("Error setting shader variable %s : %s", self.filename, err))
         self.ok = false
-    end)        
+    end)
 end
 
 function Shader:use(send_elements)
     if not self.ok then love.graphics.setShader(Shader.fallback.shaderProgram) return end
-    for i,arg in ipairs(send_elements) do
+    for _,arg in ipairs(send_elements) do
         self:send(unpack(arg))
     if not self.ok then love.graphics.setShader(Shader.fallback.shaderProgram) return end
-    end 
+    end
     love.graphics.setShader(self.shaderProgram)
 end
 

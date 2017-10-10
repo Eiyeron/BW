@@ -1,5 +1,4 @@
 local class = require("30log")
-local palette = require("palette")
 
 local Torch = class "Torch"
 
@@ -67,7 +66,7 @@ function Torch:update(dt)
     end
 end
 
-function Torch:draw()
+function Torch.draw()
 end
 
 return Torch
