@@ -99,7 +99,7 @@ function love.errhand(msg)
             end
         end
 
-        draw(pos)
+        draw()
 
         if love.timer then
             love.timer.sleep(0.1)
