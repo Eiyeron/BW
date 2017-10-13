@@ -11,8 +11,13 @@ local mathutil = require("mathutil")
 local PaletteExport = require( "utils.palette_export" )
 
 local GameState = State:extend("GameState")
-function GameState:init()
+
+local PlayerController = require( "input.playerController" )
+local TextboxController = require( "input.textboxController" )
+
+function GameState:init(game)
     self.super.init(self)
+    self.game = game
 
     self.screen_canvas = love.graphics.newCanvas(240, 128)
     self.screen_canvas:setFilter("nearest")
@@ -40,6 +45,8 @@ function GameState:init()
     self.palette_duration = 1 -- seconds
 
     self.player = Player(64, 25)
+    self.player_controller = PlayerController(self.player)
+    self.player_controller:bind_to_handler(game.input_handler)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
     love.graphics.setFont(self.pico8)
 
@@ -48,6 +55,7 @@ function GameState:init()
     self.room.player = self.player
 
     self.textbox = Textbox()
+    self.textbox_controller = TextboxController(self.textbox)
 
     self:add(self.room)
     self:add(self.textbox)
@@ -58,6 +66,13 @@ end
 function GameState:update(dt)
     self.shader_time = (self.shader_time + dt) % (math.pi * 2)
     self.super.update(self, dt)
+
+    self.player_controller:update(dt)
+    if self.textbox_controller.is_bound and self.textbox.state == "disabled" then
+        self.textbox_controller:unbind_to_handler(self.game.input_handler)
+        self.player_controller:bind_to_handler(self.game.input_handler)
+        self.player_controller:reset()
+    end
 
     if self.next_palette then
         self.palette_transition = self.palette_transition + dt
@@ -78,25 +93,6 @@ function GameState:update(dt)
         self.effects_shader:send("palette",
             unpack(self.palette)
         )
-    end
-    if love.keyboard.isDown("left") then
-        self.player.dx = -30
-        self.player.facing = "left"
-        self.player.walking = true
-    elseif love.keyboard.isDown("right") then
-        self.player.dx = 30
-        self.player.facing = "right"
-        self.player.walking = true
-    else
-        self.player.dx = 0
-        self.player.walking = false
-    end
-    if love.keyboard.isDown("up") then
-        self.player.looking = "up"
-    elseif love.keyboard.isDown("down") then
-        self.player.looking = "down"
-    else
-        self.player.looking = "normal"
     end
 
     if self.player.x < -8 then
@@ -149,7 +145,8 @@ function GameState:randomPalette()
     self.palette_transition = 0
 end
 
-function GameState:keypressed(key)
+function GameState:keypressed(key, scancode, isrepeat)
+    self.super.keypressed(self, key, scancode, isrepeat)
     if key == "f1" then
         local screenshot = love.graphics.newScreenshot()
         screenshot:encode('png', os.time() .. '.png')
@@ -163,6 +160,11 @@ function GameState:keypressed(key)
         self:randomPalette()
     elseif key == "f5" then
         self.textbox:enqueue("The Game.","The Game (bis).")
+        -- Stop the character
+        self.player_controller:stopLeft()
+        self.player_controller:stopRight()
+        self.player_controller:unbind_to_handler(self.game.input_handler)
+        self.textbox_controller:bind_to_handler(self.game.input_handler)
         self.textbox.state = "appearing"
     elseif key == "f12" then
         error("Error handler test")

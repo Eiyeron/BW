@@ -19,6 +19,17 @@ end
 function InputHandler:bind_up( button, func, target )
     self.up_commands[button] = {func = func, target = target}
 end
+function InputHandler:unbind_press( button )
+    self.press_commands[button] = nil
+end
+
+function InputHandler:unbind_down( button )
+    self.down_commands[button] = nil
+end
+
+function InputHandler:unbind_up( button )
+    self.up_commands[button] = nil
+end
 
 function InputHandler:press(button)
     local bind = self.press_commands[button]

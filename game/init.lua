@@ -9,9 +9,7 @@ local InputHandler = require("input.handler")
 
 
 local Game = class "Game"
-function Game:init(state)
-    self.state = state
-    self:register_callbacks()
+function Game:init(State)
     self.next_state = nil
     self.input_handler = InputHandler()
     love.update = function(dt) self:update(dt) end
@@ -21,11 +19,15 @@ function Game:init(state)
     self.min_dt = 1/30
     self.next_time = love.timer.getTime()
 
+    self.state = State(self)
+    self:register_callbacks()
 end
 
 function Game:register_callbacks()
     for _,callback in ipairs(_LoveCallbacks) do
-        if self.state[callback]
+        if self[callback] then
+            love[callback] = function(...) self[callback](self, ...) end
+        elseif self.state[callback]
             and (type(self.state[callback]) == "function" or getmetatable(self.state[callback]).__call ~= nil) then
 
             love[callback] = function(...) self.state[callback](self.state, ...) end
@@ -63,8 +65,8 @@ end
 function Game:keypressed(key, scancode, isrepeat)
     if not self.isrepeat then
         self.input_handler:press(key)
-        self.input_handler:down(key)
     end
+    self.input_handler:down(key)
     if self.state.keypressed then
         self.state:keypressed(key, scancode, isrepeat)
     end

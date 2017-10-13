@@ -5,5 +5,5 @@ local GameState = require("gamestate")
 require( "errhandler" )
 
 function love.load()
-    Game(GameState())
+    Game(GameState)
 end

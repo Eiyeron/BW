@@ -48,7 +48,7 @@ local function addToSelection(palette)
     for i=1,4 do
         colors[i] = string.format("#%02X%02X%02X", palette[i][1], palette[i][2], palette[i][3])
     end
-    file:write(string.format("%s\n", table.concat(colors, ", ")))
+    file:write(string.format("%s\r\n", table.concat(colors, ", ")))
     file:close()
 end
 

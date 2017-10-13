@@ -91,6 +91,36 @@ function Textbox:enqueue(...)
     end
 end
 
+function Textbox:asks_for_next()
+    if self.substate == TextBoxSubState.FULL then
+        -- TODO : correct text offset logic
+        self.character_timer = 0
+        self.current_text_start[1] = self.current_text_index[self.current_line]+1
+        self.current_text_index[1] = self.current_text_index[self.current_line]+1
+        self.current_text_start = self.current_text_index+1
+        self.current_line = 1
+        for i=1,#self.lines do
+            self.lines[i]:set("")
+        end
+        self.substate = TextBoxSubState.PRINTING
+    elseif self.substate == TextBoxSubState.END_OF_LINE then
+        -- TODO : correct text offset logic
+        self.character_timer = 0
+        self.current_text_start[1] = 0
+        self.current_text_index[1] = 1
+        self.current_line = 1
+        for i=1,#self.lines do
+            self.lines[i]:set("")
+        end
+        table.remove(self.text_queue, 1)
+        if #self.text_queue == 0 then
+            self.substate = TextBoxSubState.DONE
+        else
+            self.substate = TextBoxSubState.PRINTING
+        end
+    end
+end
+
 function Textbox:update(dt)
     if self.state == TextBoxState.DISABLED then
         return
@@ -124,36 +154,10 @@ function Textbox:update(dt)
                     end
                 end
             end
+--[[
         elseif self.substate == TextBoxSubState.FULL then
-            if love.keyboard.isDown("space") then
-                -- TODO : correct text offset logic
-                self.character_timer = 0
-                self.current_text_start[1] = self.current_text_index[self.current_line]+1
-                self.current_text_index[1] = self.current_text_index[self.current_line]+1
-                self.current_text_start = self.current_text_index+1
-                self.current_line = 1
-                for i=1,#self.lines do
-                    self.lines[i]:set("")
-                end
-                self.substate = TextBoxSubState.PRINTING
-            end
         elseif self.substate == TextBoxSubState.END_OF_LINE then
-            if love.keyboard.isDown("space") then
-                -- TODO : correct text offset logic
-                self.character_timer = 0
-                self.current_text_start[1] = 0
-                self.current_text_index[1] = 1
-                self.current_line = 1
-                for i=1,#self.lines do
-                    self.lines[i]:set("")
-                end
-                table.remove(self.text_queue, 1)
-                if #self.text_queue == 0 then
-                    self.substate = TextBoxSubState.DONE
-                else
-                    self.substate = TextBoxSubState.PRINTING
-                end
-            end
+]]
         elseif self.substate == TextBoxSubState.DONE then
             self.character_timer = 0
             self.current_text_start[1] = 0
