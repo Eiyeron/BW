@@ -12,6 +12,7 @@ function love.conf(t)
         "sti == scm-1",
         "flux == scm-1",
         "hsluv ~> 0.1",
-        "i18n ~> 0.9"
+        "i18n ~> 0.9",
+        "StackTracePlus ~> 0.1"
     }
 end

@@ -151,8 +151,8 @@ end
 
 function GameState:keypressed(key)
     if key == "f1" then
-        local screenshot = love.graphics.newScreenshot();
-        screenshot:newImageData():encode('png', os.time() .. '.png');
+        local screenshot = love.graphics.newScreenshot()
+        screenshot:encode('png', os.time() .. '.png')
     elseif key == "f2" then
         self.effects_shader:reload()
         self.effects_shader:send("palette", unpack(self.palette))
@@ -164,6 +164,8 @@ function GameState:keypressed(key)
     elseif key == "f5" then
         self.textbox:enqueue("The Game.","The Game (bis).")
         self.textbox.state = "appearing"
+    elseif key == "f12" then
+        error("Error handler test")
     end
 end
 
@@ -223,10 +225,6 @@ function GameState:draw()
 
     self:drawTextboxDebug()
     self:drawPalette()
-
-    love.graphics.print("table: "..tostring(self.previous_palette), 0, 175)
-    love.graphics.print("table: "..tostring(self.palette), 0, 183)
-    love.graphics.print("table: "..tostring(self.next_palette), 0, 190)
 end
 
 return GameState
