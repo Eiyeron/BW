@@ -48,7 +48,7 @@ function love.errhand(msg)
     local p10 = love.window.toPixels(10)
     local dumped = false
     local filename = os.date("error_%Y-%m-%d_%H-%M-%S.log")
-    local function draw(pos)
+    local function draw()
         local p = love.window.toPixels(pos)
         love.graphics.clear(love.graphics.getBackgroundColor())
         love.graphics.printf(trace, p10, p, love.graphics.getWidth() - p10)
