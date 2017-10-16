@@ -52,14 +52,19 @@ function love.errhand(msg)
         local p = love.window.toPixels(pos)
         love.graphics.clear(love.graphics.getBackgroundColor())
         love.graphics.printf(trace, p10, p, love.graphics.getWidth() - p10)
+
+        love.graphics.setColor(118, 10, 15)
+        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), p10 + love.window.toPixels(2))
+        love.graphics.setColor(255, 255, 255, 255)
         if dumped then
-            love.graphics.setColor(118, 10, 15)
-            love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), p10 + love.window.toPixels(2))
-            love.graphics.setColor(255, 255, 255, 255)
             love.graphics.printf(
                 "An error log has been dumped at "
                     ..love.filesystem.getRealDirectory(filename)
                     ..filename,
+                p10 , 0 , love.graphics.getWidth() - p10 )
+        else
+            love.graphics.printf(
+                "Press [D] to dump the error log. ",
                 p10 , 0 , love.graphics.getWidth() - p10 )
         end
         love.graphics.present()
