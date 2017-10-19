@@ -28,7 +28,6 @@ function Player:init(x, y)
 end
 
 function Player:update(dt, room)
-    print(self.dx)
     self.x = self.x + self.dx * dt
     self.y = self.y + self.dy * dt
 
