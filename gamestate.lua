@@ -4,6 +4,10 @@ local Player = require("player")
 local RoomStorage = require("room.storage")
 local Shader = require("shdrs")
 local Textbox = require("textbox")
+local Sequence = require("sequence")
+local Subsequence = require("sequence.subsequence")
+local Condition = require("sequence.condition")
+local SimpleActions = require("sequence.simple")
 
 local hsluv = require("hsluv")
 local mathutil = require("mathutil")
@@ -44,7 +48,7 @@ function GameState:init(game)
     self.palette_transition = 0
     self.palette_duration = 1 -- seconds
 
-    self.player = Player(64, 25)
+    self.player = Player(64, 128)
     self.player_controller = PlayerController(self.player)
     self.player_controller:bind_to_handler(game.input_handler)
     self.pico8 = love.graphics.newFont("fnts/pico8.ttf", 4)
@@ -61,18 +65,40 @@ function GameState:init(game)
     self:add(self.textbox)
 
     self.shader_time = 0
+    self.sequence = Sequence({
+        SimpleActions.Textbox(self,"Action sequence test", true),
+        Subsequence({
+            SimpleActions.Wait(self, .2, true),
+            SimpleActions.Look(self, "down", .5),
+            SimpleActions.Wait(self, .2, true),
+
+        }),
+        Condition("and", {
+            SimpleActions.Textbox(self,"Test", true),
+            Subsequence({
+                SimpleActions.Move(self, "right", 50),
+                SimpleActions.Wait(self, .2, true),
+                SimpleActions.Look(self, "down", .5),
+                SimpleActions.Wait(self, .2, true),
+            })
+        })
+    })
+    self.sequence.started = true
 end
 
 function GameState:update(dt)
     self.shader_time = (self.shader_time + dt) % (math.pi * 2)
     self.super.update(self, dt)
 
-    self.player_controller:update(dt)
-    if self.textbox_controller.is_bound and self.textbox.state == "disabled" then
-        self.textbox_controller:unbind_to_handler(self.game.input_handler)
-        self.player_controller:bind_to_handler(self.game.input_handler)
-        self.player_controller:reset()
+    self.sequence:update(dt)
+    if not self.sequence.started or  self.sequence.finished then
+        if self.textbox_controller.is_bound and self.textbox.state == "disabled" then
+            self.textbox_controller:unbind_to_handler(self.game.input_handler)
+            self.player_controller:bind_to_handler(self.game.input_handler)
+            self.player_controller:reset()
+        end
     end
+    self.player_controller:update(dt)
 
     if self.next_palette then
         self.palette_transition = self.palette_transition + dt
