@@ -74,16 +74,21 @@ function GameState:init(game)
 
         }),
         Condition("and", {
-            SimpleActions.Textbox(self,"Test", true),
+            SimpleActions.Textbox(self,{"This is a sequence", "The player only can make the textbox advance"}, true),
             Subsequence({
-                SimpleActions.Move(self, "right", 50),
+                SimpleActions.Move(self, "right", 96),
                 SimpleActions.Wait(self, .2, true),
-                SimpleActions.Look(self, "down", .5),
+                SimpleActions.Look(self, "up", 1),
                 SimpleActions.Wait(self, .2, true),
+                SimpleActions.Move(self, "left", 96),
+                SimpleActions.Wait(self, .2, true),
+                SimpleActions.Look(self, "up", 1),
+                SimpleActions.Wait(self, .2, true),
+                SimpleActions.Move(self, "right", 48),
+                SimpleActions.Look(self, "down", 2),
             })
         })
     })
-    self.sequence.started = true
 end
 
 function GameState:update(dt)
@@ -192,6 +197,9 @@ function GameState:keypressed(key, scancode, isrepeat)
         self.player_controller:unbind_to_handler(self.game.input_handler)
         self.textbox_controller:bind_to_handler(self.game.input_handler)
         self.textbox.state = "appearing"
+    elseif key == "f6" then
+        self.player_controller:reset()
+        self.sequence.started = true
     elseif key == "f12" then
         error("Error handler test")
     end
@@ -247,12 +255,12 @@ function GameState:draw()
     love.graphics.setColor(255,255,255)
     love.graphics.draw(self.screen_canvas,0,0, 0, 4,4)
 
-    love.graphics.print(love.timer.getFPS(), 0, 1)
-    love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
-    love.graphics.print(love.timer.getDelta(),0,13)
+    -- love.graphics.print(love.timer.getFPS(), 0, 1)
+    -- love.graphics.print(self.player.state.."("..self.player.x..")", 0, 7)
+    -- love.graphics.print(love.timer.getDelta(),0,13)
 
-    self:drawTextboxDebug()
-    self:drawPalette()
+    -- self:drawTextboxDebug()
+    -- self:drawPalette()
 end
 
 return GameState
